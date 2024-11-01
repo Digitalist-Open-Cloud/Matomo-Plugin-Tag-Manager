@@ -215,6 +215,7 @@
         "ConstantVariableDescription": "The variable is set to a fixed value.",
         "ConstantVariableName": "Constant",
         "Container": "Container",
+        "ContainerLowercase": "container",
         "ContainerContextHelp": "Defines in which context the container will be deployed. Currently, only \"Web\" containers are supported.",
         "ContainerDescriptionHelp": "Optionally, you can describe the purpose of this container. This is especially useful if you have multiple containers per site.",
         "ContainerIdVariableDescription": "Returns the ID of this container, for example \"ab2Dk432\".",
@@ -304,6 +305,8 @@
         "DeleteVariableConfirm": "Are you sure you want to delete this variable? You cannot undo the deletion.",
         "DeleteVersionConfirm": "Are you sure you want to delete this version? You cannot undo the deletion.",
         "DeleteX": "Delete %s",
+        "CopyX": "Copy %s",
+        "CopyXTo": "Copy %s to:",
         "DiffAdded": "Added",
         "DiffModified": "Modified",
         "DiffDeleted": "Deleted",
@@ -728,6 +731,7 @@
         "ShowAdvancedSettings": "Show advanced settings",
         "StartDate": "Start date",
         "Tag": "Tag",
+        "TagLowercase": "tag",
         "TagDescriptionHelp": "The tag description lets you provide a brief explanation of what the tag is for.",
         "TagEndDateHelp": "If set, this tag will be fired only up to this end date. The specified date will be assumed to be in %1$syour local timezone%2$s.",
         "TagFireTriggerRequirement": "You need to choose at least one fire trigger.",
@@ -759,6 +763,7 @@
         "TrackingType": "Tracking Type",
         "TrackingTypeHelp": "Choose which action should be executed when this tag is fired.",
         "Trigger": "Trigger",
+        "TriggerLowercase": "trigger",
         "TriggerBeingUsedBy": "The trigger is currently being used in the following places:",
         "TriggerBeingUsedNeedsRemove": "To delete this trigger, please remove the trigger from the referenced places and then try again.",
         "TriggerCannotBeDeleted": "This trigger cannot be deleted",
@@ -792,6 +797,7 @@
         "UtcDateVariableName": "UTC Date",
         "ValidatorErrorNotNumericOrVariable": "The value is not a number or variable.",
         "Variable": "Variable",
+        "VariableLowercase": "variable",
         "VariableBeingUsedBy": "The variable is currently being used in the following places:",
         "VariableBeingUsedNeedsRemove": "To delete this variable, please remove the variable from the referenced places and then try again.",
         "VariableCannotBeDeleted": "This variable cannot be deleted",
@@ -1100,6 +1106,10 @@
         "OneTrustTagDescription": "The OneTrust Consent Management Platform orchestrates the collection of consent across web, mobile, and CTV.",
         "OneTrustTagDomainTitle": "Data-domain-script",
         "OneTrustTagDomainDescription": "To find your OneTrust data-domain-script, log into OneTrust, navigate to Scripts, select your desired domain, select the Production Scripts tab, and  find your data-domain-script in the Production CDN Script.",
-        "ContainerDashboardDescription": "With Matomo Tag Manager (MTM), you can adjust your tracking configurations without making changes to your website. The container dashboard provides an overview of tags, triggers, and variables created in the container, and a list of the most recent saved versions of the container. %1$sLearn more%2$s."
+        "ContainerDashboardDescription": "With Matomo Tag Manager (MTM), you can adjust your tracking configurations without making changes to your website. The container dashboard provides an overview of tags, triggers, and variables created in the container, and a list of the most recent saved versions of the container. %1$sLearn more%2$s.",
+        "ChooseWebsite": "Choose website",
+        "CopyContainerDescription": "Select the website to copy this container to. This will create an exact copy of all settings, tags, triggers, and variables in the chosen site.",
+        "CopyContainerNote": "%1$sNote:%2$s The copied container may need adjustments if it includes custom code or references specific to the original website. Review settings to ensure compatibility.",
+        "CopyXDescription": "To duplicate this %1$s, select the website and container you’d like to add the %1$s to. This will create an exact copy of all settings of the %1$s."
     }
 }

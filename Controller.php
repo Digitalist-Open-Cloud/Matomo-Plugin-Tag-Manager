@@ -14,18 +14,22 @@ use Piwik\Common;
 use Piwik\DataTable\Filter\SafeDecodeLabel;
 use Piwik\Filechecks;
 use Piwik\Menu\MenuTop;
+use Piwik\Nonce;
 use Piwik\Notification;
 use Piwik\Piwik;
 use Piwik\Plugins\TagManager\API\PreviewCookie;
 use Piwik\Plugins\TagManager\Input\AccessValidator;
 use Piwik\Plugins\TagManager\Model\Container;
 use Piwik\Plugins\TagManager\Model\Environment;
+use Piwik\Site;
 use Piwik\Url;
 use Piwik\View;
 use Piwik\Notification\Manager as NotificationManager;
 
 class Controller extends \Piwik\Plugin\Controller
 {
+    public const COPY_CONTAINER_NONCE = 'TagManager.copyContainer';
+
     /**
      * @var AccessValidator
      */
@@ -344,6 +348,42 @@ class Controller extends \Piwik\Plugin\Controller
         }
 
         return $result;
+    }
+
+    public function copyContainerDialog()
+    {
+        $this->checkSitePermission();
+        $this->accessValidator->checkWriteCapability($this->idSite);
+
+        $idContainer = \Piwik\Request::fromRequest()->getStringParameter('idContainer');
+
+        $view = new View("@TagManager/copyDialog");
+        $view->defaultSiteDecoded = [
+            'id' => $this->idSite,
+            'name' => Common::unsanitizeInputValue(Site::getNameFor($this->idSite)),
+        ];
+        $view->idToCopy = $idContainer;
+        $view->copyType = 'container';
+        $view->copyNonce = Nonce::getNonce(self::COPY_CONTAINER_NONCE);
+        return $view->render();
+    }
+
+    public function copyContainer()
+    {
+        $this->checkSitePermission();
+        $this->accessValidator->checkWriteCapability($this->idSite);
+        Nonce::checkNonce(self::COPY_CONTAINER_NONCE);
+
+        $request = \Piwik\Request::fromRequest();
+        $idDestinationSite = $request->getIntegerParameter('idDestinationSite');
+        // Confirm tha the user has permission to copy to the selected site
+        $this->accessValidator->checkWriteCapability($idDestinationSite);
+        $idContainer = $request->getStringParameter('idContainer');
+
+        $idContainerNew = $this->container->copyContainer($this->idSite, $idContainer, $idDestinationSite);
+
+        // Once the copy is done, we should be able to redirect to the manage screen
+        $this->redirectToIndex('TagManager', 'dashboard', $idDestinationSite, null, null, ['idContainer' => $idContainerNew]);
     }
 
     protected function renderTemplate($template, array $variables = array())

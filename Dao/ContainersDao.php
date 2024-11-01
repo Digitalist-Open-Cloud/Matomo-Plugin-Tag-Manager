@@ -205,6 +205,39 @@ class ContainersDao extends BaseDao implements TagManagerDao
         Db::query($query, $bind);
     }
 
+    /**
+     * Make sure that the container name is unique. This means appending a number at the end, or if there's already been
+     * a number appended, increment the previous number. This way, when copying a container to the same site, we don't
+     * get an error that the name is already in use.
+     *
+     * @param int $idSite
+     * @param string $containerName
+     * @return string
+     */
+    public function makeCopyNameUnique(int $idSite, string $containerName): string
+    {
+        $newContainerName = $containerName;
+
+        // First check if the container name has already been automatically updated during copy process
+        $matches = [];
+        $number = 1;
+        if (preg_match('/ \(\d+\)$/', $containerName, $matches)) {
+            // Increment the number in the name
+            $number = intval(str_replace(['(', ')'], '', $matches[0]));
+            ++$number;
+            $newContainerName = str_replace($matches[0], '', $containerName);
+        }
+        $newContainerName .= " ($number)";
+
+        // Make sure that the new name doesn't already exist
+        // Call this method recursively until we have a unique name
+        if ($this->isNameInUse($idSite, $newContainerName)) {
+            $newContainerName = $this->makeCopyNameUnique($idSite, $newContainerName);
+        }
+
+        return $newContainerName;
+    }
+
     private function enrichContainers($containers)
     {
         if (empty($containers)) {

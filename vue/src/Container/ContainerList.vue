@@ -95,6 +95,15 @@
                   translate('TagManager_Container'),
                 )"
               />
+              <a
+                class="table-action icon-content-copy"
+                v-show="hasWriteAccess"
+                @click="openCopyDialog(container)"
+                :title="translate(
+                  'TagManager_CopyX',
+                  translate('TagManager_Container'),
+                )"
+              />
             </td>
           </tr>
         </tbody>
@@ -228,6 +237,16 @@ export default defineComponent({
       }
 
       return text;
+    },
+    openCopyDialog(container: Container) {
+      const url = MatomoUrl.stringify({
+        module: 'TagManager',
+        action: 'copyContainerDialog',
+        idSite: container.idsite,
+        idContainer: container.idcontainer,
+      });
+
+      window.Piwik_Popover.createPopupAndLoadUrl(url, '', 'mtmCopyContainer');
     },
   },
 });

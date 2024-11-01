@@ -153,6 +153,7 @@ __webpack_require__.d(__webpack_exports__, "TrackingCodeCommon", function() { re
 __webpack_require__.d(__webpack_exports__, "TrackingCodePage", function() { return /* reexport */ TrackingCodePage; });
 __webpack_require__.d(__webpack_exports__, "TrackingSPAPage", function() { return /* reexport */ TrackingSPAPage; });
 __webpack_require__.d(__webpack_exports__, "Debugging", function() { return /* reexport */ Debugging; });
+__webpack_require__.d(__webpack_exports__, "CopyDialog", function() { return /* reexport */ CopyDialog; });
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
 // This file is imported into lib/wc client bundles.
@@ -8187,83 +8188,84 @@ var ContainerEditvue_type_script_lang_ts_notificationId = 'containertagmanagemen
 ContainerEditvue_type_script_lang_ts.render = ContainerEditvue_type_template_id_c6ab6d32_render
 
 /* harmony default export */ var ContainerEdit = (ContainerEditvue_type_script_lang_ts);
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/TagManager/vue/src/Container/ContainerList.vue?vue&type=template&id=19df4b1d
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/TagManager/vue/src/Container/ContainerList.vue?vue&type=template&id=645a971f
 
-var ContainerListvue_type_template_id_19df4b1d_hoisted_1 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_1 = {
   class: "tagManagerManageList tagManagerContainerList"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_2 = ["innerHTML"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_3 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_2 = ["innerHTML"];
+var ContainerListvue_type_template_id_645a971f_hoisted_3 = {
   class: "index"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_4 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_4 = {
   class: "name"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_5 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_5 = {
   class: "description"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_6 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_6 = {
   class: "created"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_7 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_7 = {
   class: "action"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_8 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_8 = {
   colspan: "5"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_9 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_9 = {
   class: "loadingPiwik"
 };
 
-var ContainerListvue_type_template_id_19df4b1d_hoisted_10 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("img", {
+var ContainerListvue_type_template_id_645a971f_hoisted_10 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("img", {
   src: "plugins/Morpheus/images/loading-blue.gif"
 }, null, -1);
 
-var ContainerListvue_type_template_id_19df4b1d_hoisted_11 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_11 = {
   colspan: "5"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_12 = ["id"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_13 = ["title"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_14 = ["title"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_15 = ["title"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_16 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_12 = ["id"];
+var ContainerListvue_type_template_id_645a971f_hoisted_13 = ["title"];
+var ContainerListvue_type_template_id_645a971f_hoisted_14 = ["title"];
+var ContainerListvue_type_template_id_645a971f_hoisted_15 = ["title"];
+var ContainerListvue_type_template_id_645a971f_hoisted_16 = {
   class: "created"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_17 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_17 = {
   class: "action"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_18 = ["href", "title"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_19 = ["onClick", "title"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_20 = ["onClick", "title"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_21 = ["onClick", "title"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_22 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_18 = ["href", "title"];
+var ContainerListvue_type_template_id_645a971f_hoisted_19 = ["onClick", "title"];
+var ContainerListvue_type_template_id_645a971f_hoisted_20 = ["onClick", "title"];
+var ContainerListvue_type_template_id_645a971f_hoisted_21 = ["onClick", "title"];
+var ContainerListvue_type_template_id_645a971f_hoisted_22 = ["onClick", "title"];
+var ContainerListvue_type_template_id_645a971f_hoisted_23 = {
   class: "tableActionBar"
 };
 
-var ContainerListvue_type_template_id_19df4b1d_hoisted_23 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("span", {
+var ContainerListvue_type_template_id_645a971f_hoisted_24 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("span", {
   class: "icon-add"
 }, " ", -1);
 
-var ContainerListvue_type_template_id_19df4b1d_hoisted_24 = {
+var ContainerListvue_type_template_id_645a971f_hoisted_25 = {
   class: "ui-confirm",
   id: "confirmDeleteContainer",
   ref: "confirmDeleteContainer"
 };
-var ContainerListvue_type_template_id_19df4b1d_hoisted_25 = ["value"];
-var ContainerListvue_type_template_id_19df4b1d_hoisted_26 = ["value"];
-function ContainerListvue_type_template_id_19df4b1d_render(_ctx, _cache, $props, $setup, $data, $options) {
+var ContainerListvue_type_template_id_645a971f_hoisted_26 = ["value"];
+var ContainerListvue_type_template_id_645a971f_hoisted_27 = ["value"];
+function ContainerListvue_type_template_id_645a971f_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ContentBlock = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("ContentBlock");
 
   var _directive_content_table = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveDirective"])("content-table");
 
-  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", ContainerListvue_type_template_id_19df4b1d_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", ContainerListvue_type_template_id_645a971f_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
     feature: "Tag Manager",
     "content-title": _ctx.translate('TagManager_ManageX', _ctx.translate('TagManager_Containers'))
   }, {
     default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
       return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("p", {
         innerHTML: _ctx.$sanitize(_ctx.getManageContainersIntro)
-      }, null, 8, ContainerListvue_type_template_id_19df4b1d_hoisted_2), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("table", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("thead", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("tr", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_19df4b1d_hoisted_3, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Id')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_19df4b1d_hoisted_4, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Name')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_19df4b1d_hoisted_5, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Description')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_19df4b1d_hoisted_6, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('TagManager_CreatedDate')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_19df4b1d_hoisted_7, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Actions')), 1)])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("tbody", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("tr", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", ContainerListvue_type_template_id_19df4b1d_hoisted_8, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("span", ContainerListvue_type_template_id_19df4b1d_hoisted_9, [ContainerListvue_type_template_id_19df4b1d_hoisted_10, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(" " + Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_LoadingData')), 1)])])], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.isLoading || _ctx.isUpdating]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("tr", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", ContainerListvue_type_template_id_19df4b1d_hoisted_11, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('TagManager_NoContainersFound')) + " ", 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
+      }, null, 8, ContainerListvue_type_template_id_645a971f_hoisted_2), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("table", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("thead", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("tr", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_645a971f_hoisted_3, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Id')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_645a971f_hoisted_4, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Name')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_645a971f_hoisted_5, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Description')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_645a971f_hoisted_6, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('TagManager_CreatedDate')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("th", ContainerListvue_type_template_id_645a971f_hoisted_7, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Actions')), 1)])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("tbody", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("tr", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", ContainerListvue_type_template_id_645a971f_hoisted_8, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("span", ContainerListvue_type_template_id_645a971f_hoisted_9, [ContainerListvue_type_template_id_645a971f_hoisted_10, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(" " + Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_LoadingData')), 1)])])], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.isLoading || _ctx.isUpdating]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("tr", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", ContainerListvue_type_template_id_645a971f_hoisted_11, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('TagManager_NoContainersFound')) + " ", 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
         class: "createContainerNow",
         onClick: _cache[0] || (_cache[0] = function ($event) {
           return _ctx.createContainer();
@@ -8276,55 +8278,61 @@ function ContainerListvue_type_template_id_19df4b1d_render(_ctx, _cache, $props,
         }, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", {
           class: "index",
           title: "".concat(_ctx.translate('TagManager_Context'), ": ") + _ctx.contexts[container.context]
-        }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(container.idcontainer), 9, ContainerListvue_type_template_id_19df4b1d_hoisted_13), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", {
+        }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(container.idcontainer), 9, ContainerListvue_type_template_id_645a971f_hoisted_13), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", {
           class: "name",
           title: container.name
-        }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.truncateText(container.name, 50)), 9, ContainerListvue_type_template_id_19df4b1d_hoisted_14), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", {
+        }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.truncateText(container.name, 50)), 9, ContainerListvue_type_template_id_645a971f_hoisted_14), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", {
           class: "description",
           title: container.description
-        }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.truncateText(container.description, 75)), 9, ContainerListvue_type_template_id_19df4b1d_hoisted_15), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", ContainerListvue_type_template_id_19df4b1d_hoisted_16, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("span", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(container.created_date_pretty), 1)]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", ContainerListvue_type_template_id_19df4b1d_hoisted_17, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
+        }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.truncateText(container.description, 75)), 9, ContainerListvue_type_template_id_645a971f_hoisted_15), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", ContainerListvue_type_template_id_645a971f_hoisted_16, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("span", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(container.created_date_pretty), 1)]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("td", ContainerListvue_type_template_id_645a971f_hoisted_17, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
           class: "table-action icon-configure",
           href: '?module=TagManager&action=' + _ctx.containerDefaultAction + '&idContainer=' + container.idcontainer + '&idSite=' + container.idsite + '&period=day&date=yesterday',
           title: _ctx.translate('TagManager_ConfigureX', _ctx.translate('TagManager_Container'))
-        }, null, 8, ContainerListvue_type_template_id_19df4b1d_hoisted_18), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
+        }, null, 8, ContainerListvue_type_template_id_645a971f_hoisted_18), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
           class: "table-action installCode icon-embed",
           onClick: function onClick($event) {
             return _ctx.installCode(container.idcontainer);
           },
           title: _ctx.translate('TagManager_InstallCode')
-        }, null, 8, ContainerListvue_type_template_id_19df4b1d_hoisted_19), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
+        }, null, 8, ContainerListvue_type_template_id_645a971f_hoisted_19), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
           class: "table-action icon-edit",
           onClick: function onClick($event) {
             return _ctx.editContainer(container.idcontainer);
           },
           title: _ctx.translate('TagManager_EditX', _ctx.translate('TagManager_Container'))
-        }, null, 8, ContainerListvue_type_template_id_19df4b1d_hoisted_20), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.hasWriteAccess]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
+        }, null, 8, ContainerListvue_type_template_id_645a971f_hoisted_20), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.hasWriteAccess]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
           class: "table-action icon-delete",
           onClick: function onClick($event) {
             return _ctx.deleteContainer(container);
           },
           title: _ctx.translate('TagManager_DeleteX', _ctx.translate('TagManager_Container'))
-        }, null, 8, ContainerListvue_type_template_id_19df4b1d_hoisted_21), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.hasWriteAccess]])])], 8, ContainerListvue_type_template_id_19df4b1d_hoisted_12);
-      }), 128))])], 512), [[_directive_content_table]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", ContainerListvue_type_template_id_19df4b1d_hoisted_22, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
+        }, null, 8, ContainerListvue_type_template_id_645a971f_hoisted_21), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.hasWriteAccess]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
+          class: "table-action icon-content-copy",
+          onClick: function onClick($event) {
+            return _ctx.openCopyDialog(container);
+          },
+          title: _ctx.translate('TagManager_CopyX', _ctx.translate('TagManager_Container'))
+        }, null, 8, ContainerListvue_type_template_id_645a971f_hoisted_22), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.hasWriteAccess]])])], 8, ContainerListvue_type_template_id_645a971f_hoisted_12);
+      }), 128))])], 512), [[_directive_content_table]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", ContainerListvue_type_template_id_645a971f_hoisted_23, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
         class: "createNewContainer",
         value: "",
         onClick: _cache[1] || (_cache[1] = function ($event) {
           return _ctx.createContainer();
         })
-      }, [ContainerListvue_type_template_id_19df4b1d_hoisted_23, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('TagManager_CreateNewContainer')), 1)])], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.hasWriteAccess]])];
+      }, [ContainerListvue_type_template_id_645a971f_hoisted_24, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('TagManager_CreateNewContainer')), 1)])], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.hasWriteAccess]])];
     }),
     _: 1
-  }, 8, ["content-title"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", ContainerListvue_type_template_id_19df4b1d_hoisted_24, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("h2", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('TagManager_DeleteContainerConfirm')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("input", {
+  }, 8, ["content-title"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", ContainerListvue_type_template_id_645a971f_hoisted_25, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("h2", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('TagManager_DeleteContainerConfirm')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("input", {
     role: "yes",
     type: "button",
     value: _ctx.translate('General_Yes')
-  }, null, 8, ContainerListvue_type_template_id_19df4b1d_hoisted_25), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("input", {
+  }, null, 8, ContainerListvue_type_template_id_645a971f_hoisted_26), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("input", {
     role: "no",
     type: "button",
     value: _ctx.translate('General_No')
-  }, null, 8, ContainerListvue_type_template_id_19df4b1d_hoisted_26)], 512)]);
+  }, null, 8, ContainerListvue_type_template_id_645a971f_hoisted_27)], 512)]);
 }
-// CONCATENATED MODULE: ./plugins/TagManager/vue/src/Container/ContainerList.vue?vue&type=template&id=19df4b1d
+// CONCATENATED MODULE: ./plugins/TagManager/vue/src/Container/ContainerList.vue?vue&type=template&id=645a971f
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/TagManager/vue/src/Container/ContainerList.vue?vue&type=script&lang=ts
 function ContainerListvue_type_script_lang_ts_toConsumableArray(arr) { return ContainerListvue_type_script_lang_ts_arrayWithoutHoles(arr) || ContainerListvue_type_script_lang_ts_iterableToArray(arr) || ContainerListvue_type_script_lang_ts_unsupportedIterableToArray(arr) || ContainerListvue_type_script_lang_ts_nonIterableSpread(); }
@@ -8428,6 +8436,15 @@ var ContainerListvue_type_script_lang_ts_window = window,
       }
 
       return text;
+    },
+    openCopyDialog: function openCopyDialog(container) {
+      var url = external_CoreHome_["MatomoUrl"].stringify({
+        module: 'TagManager',
+        action: 'copyContainerDialog',
+        idSite: container.idsite,
+        idContainer: container.idcontainer
+      });
+      window.Piwik_Popover.createPopupAndLoadUrl(url, '', 'mtmCopyContainer');
     }
   }
 }));
@@ -8437,7 +8454,7 @@ var ContainerListvue_type_script_lang_ts_window = window,
 
 
 
-ContainerListvue_type_script_lang_ts.render = ContainerListvue_type_template_id_19df4b1d_render
+ContainerListvue_type_script_lang_ts.render = ContainerListvue_type_template_id_645a971f_render
 
 /* harmony default export */ var ContainerList = (ContainerListvue_type_script_lang_ts);
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/TagManager/vue/src/Container/ContainerManage.vue?vue&type=template&id=2e778f03
@@ -10683,6 +10700,257 @@ function getCircularReplacer() {
 Debuggingvue_type_script_lang_ts.render = Debuggingvue_type_template_id_1ae9acce_render
 
 /* harmony default export */ var Debugging = (Debuggingvue_type_script_lang_ts);
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue?vue&type=template&id=8772cafa
+
+var CopyDialogvue_type_template_id_8772cafa_hoisted_1 = {
+  class: "copyMtmObjectDialog"
+};
+var CopyDialogvue_type_template_id_8772cafa_hoisted_2 = ["innerHTML"];
+var CopyDialogvue_type_template_id_8772cafa_hoisted_3 = ["href"];
+function CopyDialogvue_type_template_id_8772cafa_render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_Field = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Field");
+
+  var _component_ContainerSelector = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("ContainerSelector");
+
+  var _directive_form = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveDirective"])("form");
+
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", CopyDialogvue_type_template_id_8772cafa_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("h2", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.getCopyDialogTitle), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("p", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.getCopyDescription), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+    uicontrol: "site",
+    name: "destinationSite",
+    title: _ctx.translate('TagManager_ChooseWebsite'),
+    modelValue: _ctx.site,
+    "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
+      return _ctx.site = $event;
+    })
+  }, null, 8, ["title", "modelValue"]), _ctx.copyType.toLowerCase() !== 'container' ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])(_component_ContainerSelector, {
+    key: 0
+  })) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), _ctx.copyType.toLowerCase() !== 'container' ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])(_component_Field, {
+    key: 1,
+    uicontrol: "select",
+    name: "idDestinationContainer",
+    options: _ctx.containerOptions,
+    disabled: _ctx.containerOptions.length <= 1,
+    "full-width": true,
+    title: _ctx.translate('TagManager_Container'),
+    modelValue: _ctx.idDestinationContainer,
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+      return _ctx.idDestinationContainer = $event;
+    })
+  }, null, 8, ["options", "disabled", "title", "modelValue"])) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), _ctx.copyType.toLowerCase() === 'container' ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("p", {
+    key: 2,
+    class: "copyNote",
+    innerHTML: _ctx.$sanitize(_ctx.getCopyContainerNote)
+  }, null, 8, CopyDialogvue_type_template_id_8772cafa_hoisted_2)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
+    href: _ctx.getCopyUrl,
+    class: "btn"
+  }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Copy')), 9, CopyDialogvue_type_template_id_8772cafa_hoisted_3)], 512), [[_directive_form]])]);
+}
+// CONCATENATED MODULE: ./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue?vue&type=template&id=8772cafa
+
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue?vue&type=script&lang=ts
+
+
+
+
+/* harmony default export */ var CopyDialogvue_type_script_lang_ts = (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["defineComponent"])({
+  props: {
+    defaultSite: {
+      type: Object,
+      required: true
+    },
+    copyType: {
+      type: String,
+      required: true
+    },
+    copyNonce: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    idToCopy: {
+      type: [String, Number],
+      required: true
+    }
+  },
+  directives: {
+    Form: external_CorePluginsAdmin_["Form"]
+  },
+  components: {
+    Field: external_CorePluginsAdmin_["Field"],
+    ContainerSelector: ContainerSelector
+  },
+  data: function data() {
+    return {
+      site: this.defaultSite,
+      idDestinationContainer: '',
+      containerOptions: []
+    };
+  },
+  created: function created() {
+    this.onSiteChange();
+  },
+  watch: {
+    site: function site() {
+      this.onSiteChange();
+    }
+  },
+  methods: {
+    onSiteChange: function onSiteChange() {
+      var _this$site,
+          _this = this;
+
+      // Return because there's no need to look up containers for container copy
+      if (this.copyType.toLowerCase() === 'container') {
+        return;
+      }
+
+      this.containerOptions = [];
+      this.idDestinationContainer = '';
+
+      if (!((_this$site = this.site) !== null && _this$site !== void 0 && _this$site.id)) {
+        return;
+      }
+
+      external_CoreHome_["AjaxHelper"].fetch({
+        method: 'TagManager.getContainers',
+        filter_limit: '-1',
+        idSite: this.site.id
+      }).then(function (containers) {
+        _this.containerOptions = [];
+
+        if (!(containers !== null && containers !== void 0 && containers.length)) {
+          _this.idDestinationContainer = '';
+
+          _this.containerOptions.push({
+            key: '',
+            value: _this.translate('TagManager_NoContainersFound')
+          });
+
+          return;
+        }
+
+        containers.forEach(function (container) {
+          if (!_this.idDestinationContainer) {
+            _this.idDestinationContainer = container.idcontainer;
+          }
+
+          _this.containerOptions.push({
+            key: container.idcontainer,
+            value: container.name
+          });
+        });
+      });
+    }
+  },
+  computed: {
+    getCopyDialogTitle: function getCopyDialogTitle() {
+      var objectTypeTranslation = '';
+
+      switch (this.copyType.toLowerCase()) {
+        case 'container':
+          objectTypeTranslation = Object(external_CoreHome_["translate"])('TagManager_Container');
+          break;
+
+        case 'tag':
+          objectTypeTranslation = Object(external_CoreHome_["translate"])('TagManager_Tag');
+          break;
+
+        case 'trigger':
+          objectTypeTranslation = Object(external_CoreHome_["translate"])('TagManager_Trigger');
+          break;
+
+        case 'variable':
+          objectTypeTranslation = Object(external_CoreHome_["translate"])('TagManager_Variable');
+          break;
+
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+
+      return Object(external_CoreHome_["translate"])('TagManager_CopyX', objectTypeTranslation);
+    },
+    getCopyDescription: function getCopyDescription() {
+      if (this.copyType.toLowerCase() === 'container') {
+        return Object(external_CoreHome_["translate"])('TagManager_CopyContainerDescription');
+      }
+
+      var objectTypeTranslation = '';
+
+      switch (this.copyType.toLowerCase()) {
+        case 'tag':
+          objectTypeTranslation = Object(external_CoreHome_["translate"])('TagManager_TagLowercase');
+          break;
+
+        case 'trigger':
+          objectTypeTranslation = Object(external_CoreHome_["translate"])('TagManager_TriggerLowercase');
+          break;
+
+        case 'variable':
+          objectTypeTranslation = Object(external_CoreHome_["translate"])('TagManager_VariableLowercase');
+          break;
+
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+
+      return Object(external_CoreHome_["translate"])('TagManager_CopyXDescription', objectTypeTranslation);
+    },
+    getCopyContainerNote: function getCopyContainerNote() {
+      return Object(external_CoreHome_["translate"])('TagManager_CopyContainerNote', '<strong>', '</strong>');
+    },
+    getCopyUrl: function getCopyUrl() {
+      var _this$site2;
+
+      var actionName = '';
+
+      switch (this.copyType.toLowerCase()) {
+        case 'container':
+          actionName = 'copyContainer';
+          break;
+
+        case 'tag':
+          actionName = 'copyTag';
+          break;
+
+        case 'trigger':
+          actionName = 'copyTrigger';
+          break;
+
+        case 'variable':
+          actionName = 'copyVariable';
+          break;
+
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+
+      var requestParams = {
+        module: 'TagManager',
+        action: actionName,
+        idSite: this.defaultSite.id,
+        idDestinationSite: (_this$site2 = this.site) === null || _this$site2 === void 0 ? void 0 : _this$site2.id,
+        idContainer: this.idToCopy,
+        nonce: this.copyNonce,
+        idDestinationContainer: ''
+      };
+
+      if (this.idDestinationContainer) {
+        requestParams.idDestinationContainer = this.idDestinationContainer;
+      }
+
+      return "?".concat(external_CoreHome_["MatomoUrl"].stringify(requestParams));
+    }
+  }
+}));
+// CONCATENATED MODULE: ./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue?vue&type=script&lang=ts
+ 
+// CONCATENATED MODULE: ./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue
+
+
+
+CopyDialogvue_type_script_lang_ts.render = CopyDialogvue_type_template_id_8772cafa_render
+
+/* harmony default export */ var CopyDialog = (CopyDialogvue_type_script_lang_ts);
 // CONCATENATED MODULE: ./plugins/TagManager/vue/src/index.ts
 /*!
  * Matomo - free/libre analytics platform
@@ -10690,6 +10958,7 @@ Debuggingvue_type_script_lang_ts.render = Debuggingvue_type_template_id_1ae9acce
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 
 
 

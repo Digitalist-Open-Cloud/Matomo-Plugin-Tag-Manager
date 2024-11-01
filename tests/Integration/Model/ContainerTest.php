@@ -1253,6 +1253,119 @@ class ContainerTest extends IntegrationTestCase
         $this->assertCount(4, $result);
     }
 
+    public function testCopyContainer()
+    {
+        $idContainer = $this->addContainer($this->idSite, 'My Name', 'My Description', null, 1, 1, 1);
+        $this->assertNotEmpty($idContainer);
+
+        $idContainerCopy = $this->model->copyContainer($this->idSite, $idContainer, $this->idSite);
+
+        $container = $this->model->getContainer($this->idSite, $idContainer);
+        $containerCopy = $this->model->getContainer($this->idSite, $idContainerCopy);
+
+        $this->assertNotEmpty($containerCopy['idcontainer']);
+        $this->assertNotSame($container['idcontainer'], $containerCopy['idcontainer']);
+        $this->assertNotSame($container['name'], $containerCopy['name']);
+        unset($container['idcontainer']);
+        unset($containerCopy['idcontainer']);
+        unset($container['name']);
+        unset($containerCopy['name']);
+        unset($container['draft']['idcontainer']);
+        unset($containerCopy['draft']['idcontainer']);
+        $this->assertGreaterThan(0, $containerCopy['draft']['idcontainerversion']);
+        unset($container['draft']['idcontainerversion']);
+        unset($containerCopy['draft']['idcontainerversion']);
+        $this->assertSame($container, $containerCopy);
+    }
+
+    public function testCopyContainerWithTagTriggerVariable()
+    {
+        $idContainer = $this->addContainer($this->idSite);
+        $this->assertNotEmpty($idContainer);
+
+        $container = $this->model->getContainer($this->idSite, $idContainer);
+        $this->assertGreaterThan(0, $container['draft']['idcontainerversion']);
+        $idContainerVersion = $container['draft']['idcontainerversion'];
+
+        // Add some tags to the container to be copied
+        $triggerId = $this->addContainerTrigger($this->idSite, $idContainerVersion);
+        $this->addContainerVariable($this->idSite, $idContainerVersion);
+        $this->addContainerTag($this->idSite, $idContainerVersion, 'My Test Tag', [$triggerId]);
+
+        $idContainerCopy = $this->model->copyContainer($this->idSite, $idContainer, $this->idSite);
+
+        $containerCopy = $this->model->getContainer($this->idSite, $idContainerCopy);
+        $this->assertNotEmpty($containerCopy['idcontainer']);
+        $this->assertNotSame($container['idcontainer'], $containerCopy['idcontainer']);
+        $this->assertNotSame($container['name'], $containerCopy['name']);
+        unset($container['idcontainer']);
+        unset($containerCopy['idcontainer']);
+        unset($container['name']);
+        unset($containerCopy['name']);
+        unset($container['draft']['idcontainer']);
+        unset($containerCopy['draft']['idcontainer']);
+        $idContainerCopyVersion = $containerCopy['draft']['idcontainerversion'];
+        $this->assertGreaterThan(0, $containerCopy['draft']['idcontainerversion']);
+        unset($container['draft']['idcontainerversion']);
+        unset($containerCopy['draft']['idcontainerversion']);
+        $this->assertSame($container, $containerCopy);
+
+        $trigger = StaticContainer::get('Piwik\Plugins\TagManager\Model\Trigger');
+        $copiedTriggers = $trigger->getContainerTriggers($this->idSite, $idContainerCopyVersion);
+        $this->assertCount(1, $copiedTriggers);
+        $variable = StaticContainer::get('Piwik\Plugins\TagManager\Model\Variable');
+        $copiedVariables = $variable->getContainerVariables($this->idSite, $idContainerCopyVersion);
+        $this->assertCount(1, $copiedVariables);
+        $tag = StaticContainer::get('Piwik\Plugins\TagManager\Model\Tag');
+        $copiedTags = $tag->getContainerTags($this->idSite, $idContainerCopyVersion);
+        $this->assertCount(1, $copiedTags);
+    }
+
+    public function testCopyContainerToDifferentSite()
+    {
+        $idContainer = $this->addContainer($this->idSite);
+        $this->assertNotEmpty($idContainer);
+
+        $container = $this->model->getContainer($this->idSite, $idContainer);
+        $this->assertGreaterThan(0, $container['draft']['idcontainerversion']);
+        $idContainerVersion = $container['draft']['idcontainerversion'];
+
+        // Add some tags to the container to be copied
+        $triggerId = $this->addContainerTrigger($this->idSite, $idContainerVersion);
+        $this->addContainerVariable($this->idSite, $idContainerVersion);
+        $this->addContainerTag($this->idSite, $idContainerVersion, 'My Test Tag', [$triggerId]);
+
+        $idContainerCopy = $this->model->copyContainer($this->idSite, $idContainer, $idDestinationSite = 2);
+
+        $containerCopy = $this->model->getContainer($idDestinationSite, $idContainerCopy);
+        $this->assertNotEmpty($containerCopy['idcontainer']);
+        $this->assertNotSame($container['idcontainer'], $containerCopy['idcontainer']);
+        $this->assertNotSame($container['idsite'], $containerCopy['idsite']);
+        unset($container['idcontainer']);
+        unset($containerCopy['idcontainer']);
+        unset($container['idsite']);
+        unset($containerCopy['idsite']);
+        unset($container['draft']['idcontainer']);
+        unset($containerCopy['draft']['idcontainer']);
+        unset($container['draft']['idsite']);
+        unset($containerCopy['draft']['idsite']);
+        $idContainerCopyVersion = $containerCopy['draft']['idcontainerversion'];
+        $this->assertGreaterThan(0, $containerCopy['draft']['idcontainerversion']);
+        unset($container['draft']['idcontainerversion']);
+        unset($containerCopy['draft']['idcontainerversion']);
+        $this->assertSame($container, $containerCopy);
+
+        $trigger = StaticContainer::get('Piwik\Plugins\TagManager\Model\Trigger');
+        $copiedTriggers = $trigger->getContainerTriggers($idDestinationSite, $idContainerCopyVersion);
+        $this->assertCount(1, $copiedTriggers);
+        $variable = StaticContainer::get('Piwik\Plugins\TagManager\Model\Variable');
+        $copiedVariables = $variable->getContainerVariables($idDestinationSite, $idContainerCopyVersion);
+        $this->assertCount(1, $copiedVariables);
+        $tag = StaticContainer::get('Piwik\Plugins\TagManager\Model\Tag');
+        $copiedTags = $tag->getContainerTags($idDestinationSite, $idContainerCopyVersion);
+        $this->assertCount(1, $copiedTags);
+    }
+
     private function releaseNewVersion($idSite, $idContainer, $idContainerVersion, $versionName = 'v1', $environment = 'foobar')
     {
         $idVersion = $this->createContainerVersion($idSite, $idContainer, $idContainerVersion, $versionName);
