@@ -144,6 +144,28 @@ describe("Container", function () {
         await capture.modal(page, 'install_code_dialog');
     });
 
+    it('should show dialog to copy container', async function () {
+        await page.goto(generalParamsSite1 + urlBase);
+        await page.click('#containeraaacont1 .table-action.icon-content-copy');
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyContainer');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_container_dialog');
+    });
+
+    it('should show list of sites to copy container to', async function () {
+        await page.click('#destinationSite');
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyContainer');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_container_site_select');
+    });
+
+    it('should select site to copy container to', async function () {
+        await page.evaluate(() => $('#destinationSite ul li:first').click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyContainer');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_container_site_selected');
+    });
+
     it('should show confirm delete container dialog', async function () {
         await page.goto(generalParamsSite1 + urlBase);
         await page.click('#containeraaacont1 .table-action.icon-delete');
