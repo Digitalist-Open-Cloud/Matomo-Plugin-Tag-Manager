@@ -382,8 +382,20 @@ class Controller extends \Piwik\Plugin\Controller
 
         $idContainerNew = $this->container->copyContainer($this->idSite, $idContainer, $idDestinationSite);
 
+        $url = 'index.php?module=TagManager&action=dashboard&'
+            . Url::getQueryStringFromParameters([
+                'idSite' => $idDestinationSite,
+                'idContainer' => $idContainerNew
+            ]);
+        $successMessage = Piwik::translate('TagManager_ContainerCopySuccess', ['<a href="' . $url . '">', '</a>']);
+        $notification = new Notification($successMessage);
+        $notification->raw = true;
+        $notification->context = Notification::CONTEXT_SUCCESS;
+        $notification->type = Notification::TYPE_TRANSIENT;
+        Notification\Manager::notify('containerCopied', $notification);
+
         // Once the copy is done, we should be able to redirect to the manage screen
-        $this->redirectToIndex('TagManager', 'dashboard', $idDestinationSite, null, null, ['idContainer' => $idContainerNew]);
+        $this->redirectToIndex('TagManager', 'manageContainers', $this->idSite);
     }
 
     protected function renderTemplate($template, array $variables = array())
