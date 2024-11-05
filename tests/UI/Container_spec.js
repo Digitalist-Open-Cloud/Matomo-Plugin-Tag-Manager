@@ -208,4 +208,10 @@ describe("Container", function () {
         await page.goto(generalParamsSite5 + urlBase);
         await capture.page(page, 'none_exist_view_user');
     });
+
+    it('should load container page with some containers as write user', async function () {
+        permissions.setWriteUser();
+        await page.goto(generalParamsSite1 + urlBase);
+        await capture.page(page, 'some_exist_write_user');
+    });
 });

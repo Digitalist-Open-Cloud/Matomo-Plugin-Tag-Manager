@@ -97,7 +97,7 @@
               />
               <a
                 class="table-action icon-content-copy"
-                v-show="hasWriteAccess"
+                v-show="isSuperUser"
                 @click="openCopyDialog(container)"
                 :title="translate(
                   'TagManager_CopyX',
@@ -159,6 +159,12 @@ import VersionsStore from '../Version/Versions.store';
 const { tagManagerHelper } = window;
 
 export default defineComponent({
+  props: {
+    isSuperUser: {
+      type: Boolean,
+      required: true,
+    },
+  },
   components: {
     ContentBlock,
   },
