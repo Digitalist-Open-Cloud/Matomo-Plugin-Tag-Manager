@@ -43,7 +43,7 @@ class EtrackerConfigurationVariable extends BaseVariable
             $this->makeSetting('etrackerID', '', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
                 $field->title = Piwik::translate('TagManager_EtrackerConfigurationVariableIdTitle');
                 $field->customFieldComponent = self::FIELD_VARIABLE_COMPONENT;
-                $field->description = Piwik::translate('TagManager_EtrackerConfigurationVariableIdDescription');
+                $field->description = Piwik::translate('TagManager_EtrackerConfigurationVariableIdDescriptionNew');
                 $field->validators[] = new NotEmpty();
                 $field->transform = function ($value) {
                     return trim($value);
