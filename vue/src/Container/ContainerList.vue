@@ -216,7 +216,7 @@ export default defineComponent({
       return this.isSuperUser;
     },
     getActionClasses(): string {
-      const copyClass = this.isSuperUser ? ' hasCopyAction' : '';
+      const copyClass = this.canCopyContainer ? ' hasCopyAction' : '';
       return `action${copyClass}`;
     },
   },
