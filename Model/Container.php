@@ -504,9 +504,7 @@ class Container extends BaseModel
         $container = $this->getContainer($idSite, $idContainer);
 
         // If the source site is the same as the destination site, update the name to one that isn't already in use
-        if ($idSite === $idDestinationSite) {
-            $container['name'] = $this->dao->makeCopyNameUnique($idSite, $container['name']);
-        }
+        $container['name'] = $this->dao->makeCopyNameUnique($idSite, $container['name']);
 
         $idContainerNew = $this->addContainer(
             $idDestinationSite,
