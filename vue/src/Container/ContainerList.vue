@@ -61,7 +61,7 @@
               :title="container.description"
             >{{ truncateText(container.description, 75) }}</td>
             <td class="created"><span>{{ container.created_date_pretty }}</span></td>
-            <td class="action">
+            <td :class="getActionClasses">
               <a
                 class="table-action icon-configure"
                 :href="'?module=TagManager&action=' + containerDefaultAction + '&idContainer='
@@ -97,7 +97,7 @@
               />
               <a
                 class="table-action icon-content-copy"
-                v-show="isSuperUser"
+                v-show="canCopyContainer"
                 @click="openCopyDialog(container)"
                 :title="translate(
                   'TagManager_CopyX',
@@ -211,6 +211,13 @@ export default defineComponent({
     getManageContainersIntro(): string {
       const linkString = externalLink('https://matomo.org/guide/tag-manager/getting-started-with-tag-manager/');
       return translate('TagManager_ManageContainersIntro', linkString, '</a>');
+    },
+    canCopyContainer(): boolean {
+      return this.isSuperUser;
+    },
+    getActionClasses(): string {
+      const copyClass = this.isSuperUser ? ' hasCopyAction' : '';
+      return `action${copyClass}`;
     },
   },
   methods: {
