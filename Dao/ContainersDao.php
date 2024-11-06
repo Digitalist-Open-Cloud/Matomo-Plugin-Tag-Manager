@@ -216,6 +216,11 @@ class ContainersDao extends BaseDao implements TagManagerDao
      */
     public function makeCopyNameUnique(int $idSite, string $containerName): string
     {
+        // If the name isn't already in use, simply return it
+        if (!$this->isNameInUse($idSite, $containerName)) {
+            return $containerName;
+        }
+
         $newContainerName = $containerName;
 
         // First check if the container name has already been automatically updated during copy process
