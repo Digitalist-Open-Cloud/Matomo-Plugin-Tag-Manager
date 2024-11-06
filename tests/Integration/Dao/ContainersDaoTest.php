@@ -552,23 +552,23 @@ class ContainersDaoTest extends IntegrationTestCase
     public function getMakeCopyNameUniqueTestData(): array
     {
         return [
-            ['FooContainer', [], 'FooContainer (1)'],
-            ['FooContainer (1)', [], 'FooContainer (2)'],
-            ['FooContainer', [1], 'FooContainer (2)'],
-            ['FooContainer', [1, 2], 'FooContainer (3)'],
-            ['FooContainer', [1, 2, 3], 'FooContainer (4)'],
+            ['FooContainer', [], 'FooContainer'],
+            ['FooContainer (1)', [], 'FooContainer (1)'],
+            ['FooContainer', [1], 'FooContainer'],
+            ['FooContainer', [1, 2], 'FooContainer'],
+            ['FooContainer', [1, 2, 3], 'FooContainer'],
             ['FooContainer (1)', [1], 'FooContainer (2)'],
             ['FooContainer (1)', [1, 2], 'FooContainer (3)'],
             ['FooContainer (1)', [1, 2, 3], 'FooContainer (4)'],
-            ['FooContainer (2)', [1], 'FooContainer (3)'],
+            ['FooContainer (2)', [1], 'FooContainer (2)'],
             ['FooContainer (2)', [1, 2], 'FooContainer (3)'],
             ['FooContainer (2)', [1, 2, 3], 'FooContainer (4)'],
-            ['FooContainer (3)', [1], 'FooContainer (4)'],
-            ['FooContainer (3)', [1, 2], 'FooContainer (4)'],
+            ['FooContainer (3)', [1], 'FooContainer (3)'],
+            ['FooContainer (3)', [1, 2], 'FooContainer (3)'],
             ['FooContainer (3)', [1, 2, 3], 'FooContainer (4)'],
-            ['FooContainer(1)', [1, 2, 3], 'FooContainer(1) (1)'],
-            ['SomeOtherName', [1, 2, 3], 'SomeOtherName (1)'],
-            ['SomeOtherName (1)', [1, 2, 3], 'SomeOtherName (2)'],
+            ['FooContainer(1)', [1, 2, 3], 'FooContainer(1)'],
+            ['SomeOtherName', [1, 2, 3], 'SomeOtherName'],
+            ['SomeOtherName (1)', [1, 2, 3], 'SomeOtherName (1)'],
         ];
     }
 
