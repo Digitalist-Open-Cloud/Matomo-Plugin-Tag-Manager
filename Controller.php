@@ -352,8 +352,7 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyContainerDialog()
     {
-        $this->checkSitePermission();
-        $this->accessValidator->checkWriteCapability($this->idSite);
+        Piwik::checkUserHasSuperUserAccess();
 
         $idContainer = \Piwik\Request::fromRequest()->getStringParameter('idContainer');
 
@@ -370,8 +369,7 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyContainer()
     {
-        $this->checkSitePermission();
-        $this->accessValidator->checkWriteCapability($this->idSite);
+        Piwik::checkUserHasSuperUserAccess();
         Nonce::checkNonce(self::COPY_CONTAINER_NONCE);
 
         $request = \Piwik\Request::fromRequest();
