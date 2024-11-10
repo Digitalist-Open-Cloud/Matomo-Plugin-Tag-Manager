@@ -19,6 +19,12 @@ class EtrackerTag extends BaseTag
 {
     public const PARAM_ETRACKER_CONFIG = 'etrackerConfig';
 
+    public function getDescription()
+    {
+        return Piwik::translate('TagManager_EtrackerTagDescriptionNew');
+    }
+
+
     public function getIcon()
     {
         return 'plugins/TagManager/images/icons/etracker.svg';

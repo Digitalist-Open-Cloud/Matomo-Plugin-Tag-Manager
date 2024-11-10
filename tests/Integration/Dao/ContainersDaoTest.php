@@ -531,6 +531,47 @@ class ContainersDaoTest extends IntegrationTestCase
         $this->assertSame(null, $containers[2]['deleted_date']);
     }
 
+    /**
+     * @dataProvider getMakeCopyNameUniqueTestData
+     * @param string $name
+     * @param array $containers
+     * @param string $expected
+     * @return void
+     */
+    public function testMakeCopyNameUnique(string $name, array $containers, string $expected)
+    {
+        $idSite = 1;
+        foreach ($containers as $number) {
+            $this->createContainer($idSite, 'abc' . $number, "FooContainer ($number)");
+        }
+
+        $updatedName = $this->dao->makeCopyNameUnique($idSite, $name);
+        $this->assertSame($expected, $updatedName);
+    }
+
+    public function getMakeCopyNameUniqueTestData(): array
+    {
+        return [
+            ['FooContainer', [], 'FooContainer'],
+            ['FooContainer (1)', [], 'FooContainer (1)'],
+            ['FooContainer', [1], 'FooContainer'],
+            ['FooContainer', [1, 2], 'FooContainer'],
+            ['FooContainer', [1, 2, 3], 'FooContainer'],
+            ['FooContainer (1)', [1], 'FooContainer (2)'],
+            ['FooContainer (1)', [1, 2], 'FooContainer (3)'],
+            ['FooContainer (1)', [1, 2, 3], 'FooContainer (4)'],
+            ['FooContainer (2)', [1], 'FooContainer (2)'],
+            ['FooContainer (2)', [1, 2], 'FooContainer (3)'],
+            ['FooContainer (2)', [1, 2, 3], 'FooContainer (4)'],
+            ['FooContainer (3)', [1], 'FooContainer (3)'],
+            ['FooContainer (3)', [1, 2], 'FooContainer (3)'],
+            ['FooContainer (3)', [1, 2, 3], 'FooContainer (4)'],
+            ['FooContainer(1)', [1, 2, 3], 'FooContainer(1)'],
+            ['SomeOtherName', [1, 2, 3], 'SomeOtherName'],
+            ['SomeOtherName (1)', [1, 2, 3], 'SomeOtherName (1)'],
+        ];
+    }
+
     private function createContainer($idSite = 1, $idContainer = 'abcdef', $name = 'FooContainer', $ignoreGtmDataLayer = 0, $isTagFireLimitAllowedInPreviewMode = 0, $activelySyncGtmDataLayer = 0)
     {
         $context = WebContext::ID;

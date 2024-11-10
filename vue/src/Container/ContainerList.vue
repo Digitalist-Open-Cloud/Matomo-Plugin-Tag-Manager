@@ -61,7 +61,7 @@
               :title="container.description"
             >{{ truncateText(container.description, 75) }}</td>
             <td class="created"><span>{{ container.created_date_pretty }}</span></td>
-            <td class="action">
+            <td :class="getActionClasses">
               <a
                 class="table-action icon-configure"
                 :href="'?module=TagManager&action=' + containerDefaultAction + '&idContainer='
@@ -92,6 +92,15 @@
                 @click="deleteContainer(container)"
                 :title="translate(
                   'TagManager_DeleteX',
+                  translate('TagManager_Container'),
+                )"
+              />
+              <a
+                class="table-action icon-content-copy"
+                v-show="canCopyContainer"
+                @click="openCopyDialog(container)"
+                :title="translate(
+                  'TagManager_CopyX',
                   translate('TagManager_Container'),
                 )"
               />
@@ -150,6 +159,12 @@ import VersionsStore from '../Version/Versions.store';
 const { tagManagerHelper } = window;
 
 export default defineComponent({
+  props: {
+    isSuperUser: {
+      type: Boolean,
+      required: true,
+    },
+  },
   components: {
     ContentBlock,
   },
@@ -197,6 +212,13 @@ export default defineComponent({
       const linkString = externalLink('https://matomo.org/guide/tag-manager/getting-started-with-tag-manager/');
       return translate('TagManager_ManageContainersIntro', linkString, '</a>');
     },
+    canCopyContainer(): boolean {
+      return this.isSuperUser;
+    },
+    getActionClasses(): string {
+      const copyClass = this.canCopyContainer ? ' hasCopyAction' : '';
+      return `action${copyClass}`;
+    },
   },
   methods: {
     createContainer() {
@@ -228,6 +250,16 @@ export default defineComponent({
       }
 
       return text;
+    },
+    openCopyDialog(container: Container) {
+      const url = MatomoUrl.stringify({
+        module: 'TagManager',
+        action: 'copyContainerDialog',
+        idSite: container.idsite,
+        idContainer: container.idcontainer,
+      });
+
+      window.Piwik_Popover.createPopupAndLoadUrl(url, '', 'mtmCopyContainer');
     },
   },
 });

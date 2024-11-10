@@ -21,6 +21,7 @@ use Piwik\Plugins\TagManager\Input\Description;
 use Piwik\Plugins\TagManager\Input\IdSite;
 use Piwik\Plugins\TagManager\Input\Name;
 use Piwik\Plugins\TagManager\Model\Container\ContainerIdGenerator;
+use Piwik\Plugins\TagManager\Template\Variable\MatomoConfigurationVariable;
 use Piwik\Validators\NumberRange;
 
 class Container extends BaseModel
@@ -480,5 +481,82 @@ class Container extends BaseModel
         unset($containerRelease['deleted_date']);
 
         return $containerRelease;
+    }
+
+    /**
+     * Copy a container, with the option of from one site to another. It will generate a new container ID, but try to
+     * keep everything else the same. If copying to the same site, it will automatically update the name to make it
+     * unique.
+     *
+     * @param int $idSite ID of the site the container being copied belongs to
+     * @param string $idContainer ID of the container being copied
+     * @param null|int $idDestinationSite Optional ID of the site to copy the container to. If left empty, the source site ID
+     * will be used
+     * @return string ID of the newly created copy container
+     */
+    public function copyContainer(int $idSite, string $idContainer, ?int $idDestinationSite = 0): string
+    {
+        $this->checkContainerExists($idSite, $idContainer);
+
+        // If the destination site is empty, assume the source is the destination
+        $idDestinationSite = $idDestinationSite === 0 ? $idSite : $idDestinationSite;
+
+        $container = $this->getContainer($idSite, $idContainer);
+
+        // Make sure that the name of the container isn't already in use for the destination site
+        $container['name'] = $this->dao->makeCopyNameUnique($idDestinationSite, $container['name']);
+
+        $idContainerNew = $this->addContainer(
+            $idDestinationSite,
+            $container['context'],
+            $container['name'],
+            $container['description'],
+            $container['ignoreGtmDataLayer'],
+            $container['isTagFireLimitAllowedInPreviewMode'],
+            $container['activelySyncGtmDataLayer']
+        );
+
+        $containerNew = $this->getContainer($idDestinationSite, $idContainerNew);
+        $idContainerNewVersion = $containerNew['draft']['idcontainerversion'];
+
+        $exported = $this->getExport()->exportContainerVersion($idSite, $idContainer, $container['draft']['idcontainerversion']);
+        $import = StaticContainer::get('Piwik\Plugins\TagManager\API\Import');
+        $import->importContainerVersion($exported, $idDestinationSite, $idContainerNew, $idContainerNewVersion);
+
+        // If we're copying to the same site, we're done
+        if ($idSite === $idDestinationSite) {
+            return $idContainerNew;
+        }
+
+        $this->updateVariablesWithNewSiteId($idDestinationSite, $idContainerNewVersion);
+
+        return $idContainerNew;
+    }
+
+    private function updateVariablesWithNewSiteId(int $idSite, int $idContainerVersion)
+    {
+        // Check the Matomo configuration variables to update the site ID
+        $variable = StaticContainer::get('Piwik\Plugins\TagManager\Model\Variable');
+        $newVariables = $variable->getContainerVariables($idSite, $idContainerVersion);
+        foreach ($newVariables as $newVariable) {
+            // We only care about Matomo configuration variables
+            if (!isset($newVariable['type']) || $newVariable['type'] !== MatomoConfigurationVariable::ID) {
+                continue;
+            }
+
+            // Update the site ID to match the site to which the container/variables belong
+            $parameters = $newVariable['parameters'];
+            $parameters['idSite'] = $idSite;
+            $variable->updateContainerVariable(
+                $idSite,
+                $idContainerVersion,
+                $newVariable['idvariable'],
+                $newVariable['name'],
+                $parameters,
+                $newVariable['default_value'],
+                $newVariable['lookup_table'],
+                $newVariable['description']
+            );
+        }
     }
 }

@@ -940,6 +940,15 @@ class TagManager extends \Piwik\Plugin
         $result[] = 'TagManager_ActivelySyncGtmDataLayerDescription';
         $result[] = 'TagManager_ContainerIdInformation';
         $result[] = 'TagManager_ContainerDashboardDescription';
+        $result[] = 'TagManager_CopyX';
+        $result[] = 'TagManager_CopyXDescription';
+        $result[] = 'TagManager_CopyContainerDescription';
+        $result[] = 'TagManager_ContainerLowercase';
+        $result[] = 'TagManager_TagLowercase';
+        $result[] = 'TagManager_TriggerLowercase';
+        $result[] = 'TagManager_VariableLowercase';
+        $result[] = 'TagManager_ChooseWebsite';
+        $result[] = 'TagManager_CopyContainerNote';
     }
 
     public function getStylesheetFiles(&$stylesheets)
@@ -953,6 +962,7 @@ class TagManager extends \Piwik\Plugin
         $stylesheets[] = "plugins/TagManager/vue/src/ContainerDashboard/ContainerDashboard.less";
         $stylesheets[] = "plugins/TagManager/vue/src/Version/VersionEdit.less";
         $stylesheets[] = "plugins/TagManager/vue/src/TagmanagerTrackingCode/TagManagerTrackingCode.less";
+        $stylesheets[] = "plugins/TagManager/vue/src/CopyDialog/CopyDialog.less";
     }
 
     public function getJsFiles(&$jsFiles)
