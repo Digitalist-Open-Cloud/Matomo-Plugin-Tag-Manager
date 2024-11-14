@@ -255,6 +255,9 @@ describe("ContainerTag", function () {
         await page.waitForNetworkIdle();
         await page.waitForTimeout(500);
         await capture.modal(page, 'updated_trigger_name_reopen');
+        await page.evaluate(() => function() {
+          $('.modal.open .modal-close')[0].click();
+        });
     });
 
     it('should load an edit tag through URL', async function () {
