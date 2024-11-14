@@ -73,8 +73,84 @@ abstract class BaseDao
         }
     }
 
+    /**
+     * Make sure that the name is unique. This means appending a number at the end, or if there's already been a number
+     * appended, increment the previous number. This way, when copying a tag/trigger/variable to the same site, we don't
+     * get an error that the name is already in use.
+     *
+     * @param int $idSite
+     * @param string $name
+     * @param null|int $idContainerVersion Optional ID of the container version. It's only optional since containers
+     * don't need it.
+     * @return string
+     * @throws \Exception Throws an exception if it's a Tag, Trigger, or Variable and doesn't have a idContainerVersion
+     */
+    public function makeCopyNameUnique(int $idSite, string $name, ?int $idContainerVersion = null): string
+    {
+        $supportedClasses = [
+            '\Piwik\Plugins\TagManager\Dao\TagsDao',
+            '\Piwik\Plugins\TagManager\Dao\TriggersDao',
+            '\Piwik\Plugins\TagManager\Dao\VariablesDao'
+        ];
+        if (in_array(get_class($this), $supportedClasses) && $idContainerVersion === null) {
+            throw new \Exception('The idContainerVersion is required for Tags, Triggers, and Variables');
+        }
+
+        // If the name isn't already in use, simply return it
+        if (!$this->isNameAlreadyUsed($idSite, $name, $idContainerVersion)) {
+            return $name;
+        }
+
+        $newName = $this->incrementNameWithNumber($name);
+
+        // Make sure that the new name doesn't already exist
+        // Call this method recursively until we have a unique name
+        if ($this->isNameAlreadyUsed($idSite, $newName, $idContainerVersion)) {
+            $newName = $this->makeCopyNameUnique($idSite, $newName, $idContainerVersion);
+        }
+
+        return $newName;
+    }
+
+    /**
+     * Check if the name is already in use. If it's a container, the idContainerVersion isn't needed. It's required for
+     * tags, triggers, and variables.
+     *
+     * @param int $idSite
+     * @param string $name
+     * @param null|int $idContainerVersion Optional ID of the container version. It's only optional since containers
+     * don't need it.
+     * @return bool Indicating whether the name is already in use
+     */
+    protected abstract function isNameAlreadyUsed(int $idSite, string $name, ?int $idContainerVersion = null): bool;
+
     protected function getCurrentDateTime()
     {
         return Date::now()->getDatetime();
+    }
+
+    /**
+     * Update the provided name with a number suffix. It will either add a suffix or increment the number in the suffix.
+     *
+     * @param string $name The name that needs to be updated with a number suffix. If no suffix exists, one will be
+     * added. If one already exists, the number in the suffix will be incremented.
+     * @return string Name with the updated number suffix
+     */
+    protected function incrementNameWithNumber(string $name): string
+    {
+        $newName = $name;
+
+        // First check if the name already has a number suffix
+        $matches = [];
+        $number = 1;
+        if (preg_match('/ \(\d+\)$/', $name, $matches)) {
+            // Increment the number in the name suffix
+            $number = intval(str_replace(['(', ')'], '', $matches[0]));
+            ++$number;
+            $newName = str_replace($matches[0], '', $name);
+        }
+        $newName .= " ($number)";
+
+        return $newName;
     }
 }

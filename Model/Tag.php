@@ -182,6 +182,37 @@ class Tag extends BaseModel
         return $this->enrichTag($tag);
     }
 
+    /**
+     * Make a copy of a tag in the same container.
+     *
+     * @param int $idSite
+     * @param int $idContainerVersion
+     * @param int $idTag
+     * @return int
+     */
+    public function copyTag(int $idSite, int $idContainerVersion, int $idTag): int
+    {
+        $tag = $this->dao->getContainerTag($idSite, $idContainerVersion, $idTag);
+        $newName = $this->dao->makeCopyNameUnique($idSite, $tag['name'], $idContainerVersion);
+
+        return $this->addContainerTag(
+            $idSite,
+            $idContainerVersion,
+            $tag['type'],
+            $newName,
+            $tag['parameters'],
+            $tag['fire_trigger_ids'],
+            $tag['block_trigger_ids'],
+            $tag['fire_limit'],
+            $tag['fire_delay'],
+            $tag['priority'],
+            $tag['start_date'],
+            $tag['end_date'],
+            $tag['description'],
+            $tag['status']
+        );
+    }
+
     private function updateTagColumns($idSite, $idContainerVersion, $idTag, $columns)
     {
         if (!isset($columns['updated_date'])) {

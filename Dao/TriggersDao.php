@@ -174,6 +174,11 @@ class TriggersDao extends BaseDao implements TagManagerDao
         Db::query($query, $bind);
     }
 
+    protected function isNameAlreadyUsed(int $idSite, string $name, ?int $idContainerVersion = null): bool
+    {
+        return $this->isNameInUse($idSite, $idContainerVersion, $name);
+    }
+
     private function enrichTriggers($triggers)
     {
         if (empty($triggers)) {
