@@ -330,7 +330,7 @@ class Variable extends BaseModel
                 $matches = [];
                 preg_match_all('/{{.[^}]+}}/', $parameters[$paramName], $matches);
                 $matches = array_unique($matches[0]);
-                $variables = array_map(function($value) {
+                $variables = array_map(function ($value) {
                     return trim(str_replace(['{{', '}}'], '', $value));
                 }, $matches);
             }
