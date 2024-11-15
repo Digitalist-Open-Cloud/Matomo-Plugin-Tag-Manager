@@ -145,6 +145,24 @@ class TriggersDao extends BaseDao implements TagManagerDao
     }
 
     /**
+     * Look up the trigger using its name
+     *
+     * @param int $idSite
+     * @param int  $idContainerVersion
+     * @param string $triggerName
+     * @return array|false
+     * @throws \Exception
+     */
+    public function findTriggerByName(int $idSite, int $idContainerVersion, string $triggerName)
+    {
+        $table = $this->tablePrefixed;
+        $bind = array($idSite, $idContainerVersion, self::STATUS_ACTIVE, $triggerName);
+        $trigger = Db::fetchRow("SELECT * FROM $table WHERE idsite = ? AND idcontainerversion = ? AND status = ? AND `name` = ?", $bind);
+
+        return $this->enrichTrigger($trigger);
+    }
+
+    /**
      * @param int $idSite
      * @param string $deletedDate
      */

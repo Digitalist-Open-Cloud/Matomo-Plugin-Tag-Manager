@@ -441,6 +441,54 @@ class VariableTest extends IntegrationTestCase
         $this->assertSame('function () { return {{NewVariableName}}; }', $referencingVariable['parameters']['jsFunction']);
     }
 
+    public function testListVariableNamesInParameters()
+    {
+        $idVariable = $this->addContainerVariable($this->idSite, $this->containerVersion1, DataLayerVariable::ID, 'MyName', $parameters = ['dataLayerName' => 'fooBar'], 'myDefault');
+        $this->assertSame(2, $idVariable);
+
+        $variable = $this->model->getContainerVariable($this->idSite, $this->containerVersion1, $idVariable);
+
+        $trigger = StaticContainer::get('Piwik\Plugins\TagManager\Model\Trigger');
+        $idTrigger1 = $trigger->addContainerTrigger($this->idSite, $this->containerVersion1, WindowLoadedTrigger::ID, 'MyTrigger1', [], []);
+        $this->assertSame(1, $idTrigger1);
+        $tagParameters = ['matomoConfig' => "{{{$variable['name']}}}", 'trackingType' => 'pageview'];
+        $idTag = $this->tagModel->addContainerTag($this->idSite, $this->containerVersion1, MatomoTag::ID, 'Tag1Name', $tagParameters, [$idTrigger1], [], Tag::FIRE_LIMIT_UNLIMITED, 0, 9999, $this->now, $this->now);
+        $this->assertSame(1, $idTag);
+
+        $tag = $this->tagModel->getContainerTag($this->idSite, $this->containerVersion1, $idTag);
+        $variableList = $this->model->listVariableNamesInParameters($tag);
+        $this->assertCount(1, $variableList);
+        $this->assertSame([$variable['name']], $variableList);
+    }
+
+    /**
+     * @dataProvider getListVariableNamesInParametersInCustomJsVariableTestData
+     * @param string $functionString
+     * @param array $expectedList
+     * @return void
+     */
+    public function testListVariableNamesInParametersInCustomJsVariable(string $functionString, array $expectedList)
+    {
+        $variableParams = ['jsFunction' => $functionString];
+        $idVariable = $this->addContainerVariable($this->idSite, $this->containerVersion1, CustomJsFunctionVariable::ID, 'TestVariable', $variableParams);
+        $this->assertSame(2, $idVariable);
+
+        $variable = $this->model->getContainerVariable($this->idSite, $this->containerVersion1, $idVariable);
+        $variableList = $this->model->listVariableNamesInParameters($variable);
+        $this->assertSame($expectedList, $variableList);
+    }
+
+    public function getListVariableNamesInParametersInCustomJsVariableTestData()
+    {
+        return [
+            ['function () { return 12345; }', []],
+            ['function () { return {{TestVariable}}; }', ['TestVariable']],
+            ['function () { return {{TestVariable}} {{AnotherTestVariable}}; }', ['TestVariable', 'AnotherTestVariable']],
+            ['function () { return {{TestVariable}} {{AnotherTestVariable}} {{ThirdTestVariable}}; }', ['TestVariable', 'AnotherTestVariable', 'ThirdTestVariable']],
+            ['function () { return {{TestVariable}} {{AnotherTestVariable}} {{ThirdTestVariable}} {{TestVariable}} {{AnotherTestVariable}}; }', ['TestVariable', 'AnotherTestVariable', 'ThirdTestVariable']],
+        ];
+    }
+
     public function testGetContainer()
     {
         // no need to create new test for this

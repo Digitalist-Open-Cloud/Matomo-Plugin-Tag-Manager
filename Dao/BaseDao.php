@@ -87,12 +87,13 @@ abstract class BaseDao
      */
     public function makeCopyNameUnique(int $idSite, string $name, ?int $idContainerVersion = null): string
     {
-        $supportedClasses = [
+        $requireVersion = [
             '\Piwik\Plugins\TagManager\Dao\TagsDao',
             '\Piwik\Plugins\TagManager\Dao\TriggersDao',
-            '\Piwik\Plugins\TagManager\Dao\VariablesDao'
+            '\Piwik\Plugins\TagManager\Dao\VariablesDao',
+            '\Piwik\Plugins\TagManager\Dao\ContainerVersionsDao',
         ];
-        if (in_array(get_class($this), $supportedClasses) && $idContainerVersion === null) {
+        if (in_array(get_class($this), $requireVersion) && $idContainerVersion === null) {
             throw new \Exception('The idContainerVersion is required for Tags, Triggers, and Variables');
         }
 
@@ -122,7 +123,7 @@ abstract class BaseDao
      * don't need it.
      * @return bool Indicating whether the name is already in use
      */
-    protected abstract function isNameAlreadyUsed(int $idSite, string $name, ?int $idContainerVersion = null): bool;
+    abstract protected function isNameAlreadyUsed(int $idSite, string $name, ?int $idContainerVersion = null): bool;
 
     protected function getCurrentDateTime()
     {

@@ -9,6 +9,7 @@
 
 namespace Piwik\Plugins\TagManager\Model;
 
+use Piwik\Container\StaticContainer;
 use Piwik\Piwik;
 use Piwik\Plugins\TagManager\API\TagReference;
 use Piwik\Plugins\TagManager\Dao\TriggersDao;
@@ -138,6 +139,54 @@ class Trigger extends BaseModel
     {
         $trigger = $this->dao->getContainerTrigger($idSite, $idContainerVersion, $idTrigger);
         return $this->enrichTrigger($trigger);
+    }
+
+    /**
+     * Look up a trigger by its name.
+     *
+     * @param int $idSite
+     * @param int $idContainerVersion
+     * @param string $triggerName
+     * @return array|false
+     */
+    public function findTriggerByName(int $idSite, int $idContainerVersion, string $triggerName)
+    {
+        $trigger = $this->dao->findTriggerByName($idSite, $idContainerVersion, $triggerName);
+        return $this->enrichTrigger($trigger);
+    }
+
+    /**
+     * Make a copy of the trigger and return the ID. If a matching trigger already exists in the destination container,
+     * simply return the ID of that trigger so that we're not unintentionally creating a bunch of duplicates.
+     *
+     * @param int $idSite
+     * @param int $idContainerVersion
+     * @param int $idTrigger
+     * @param int $idDestinationSite
+     * @param int $idDestinationVersion
+     * @return int ID of the newly created trigger or the ID of an existing trigger than matches the trigger to be copied
+     */
+    public function copyTriggerIfNoEquivalent(int $idSite, int $idContainerVersion, int $idTrigger, int $idDestinationSite, int $idDestinationVersion): int
+    {
+        $trigger = $this->getContainerTrigger($idSite, $idContainerVersion, $idTrigger);
+        $existingTrigger = $this->findTriggerByName($idDestinationSite, $idDestinationVersion, $trigger['name']);
+        // If there's already a trigger that matches, simply use it
+        if (is_array($existingTrigger) && $existingTrigger['parameters'] == $trigger['parameters'] && $existingTrigger['conditions'] == $trigger['conditions']) {
+            return $existingTrigger['idtrigger'];
+        }
+
+        StaticContainer::get(Variable::class)->copyReferencedVariables($trigger, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationVersion);
+
+        $newName = $this->dao->makeCopyNameUnique($idDestinationSite, $idDestinationVersion, $trigger['name']);
+        return $this->addContainerTrigger(
+            $idDestinationSite,
+            $idDestinationVersion,
+            $trigger['type'],
+            $newName,
+            $trigger['parameters'],
+            $trigger['conditions'],
+            $trigger['description']
+        );
     }
 
     private function updateTriggerColumns($idSite, $idContainerVersion, $idTrigger, $columns)
