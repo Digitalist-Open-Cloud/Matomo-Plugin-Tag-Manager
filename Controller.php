@@ -415,7 +415,8 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyTagDialog()
     {
-        Piwik::checkUserHasSuperUserAccess();
+        $this->accessValidator->checkWriteCapability($this->idSite);
+        $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
 
         $request = \Piwik\Request::fromRequest();
         $idTag = $request->getIntegerParameter('idTag');
@@ -437,7 +438,8 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyTag()
     {
-        Piwik::checkUserHasSuperUserAccess();
+        $this->accessValidator->checkWriteCapability($this->idSite);
+        $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
         Nonce::checkNonce(self::COPY_TAG_NONCE);
 
         $request = \Piwik\Request::fromRequest();
