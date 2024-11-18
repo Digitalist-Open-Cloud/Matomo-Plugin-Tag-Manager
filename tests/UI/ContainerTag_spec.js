@@ -250,6 +250,19 @@ describe("ContainerTag", function () {
         await capture.page(page, 'edit_trigger_directly_updated');
     });
 
+    it('should show the updated trigger with name updatedTrigger, when opened again', async function () {
+        await page.click('.fireTrigger .icon-edit');
+        await page.waitForNetworkIdle();
+        await page.waitForTimeout(500);
+        await capture.modal(page, 'updated_trigger_name_reopen');
+        await page.evaluate(() => function() {
+          $('.modal.open .modal-close')[0].click();
+        });
+        await page.reload();
+        await page.waitForNetworkIdle();
+        await page.waitForTimeout(500);
+    });
+
     it('should load an edit tag through URL', async function () {
         await page.goto(container1Base + '#?idTag=2');
         await page.waitForNetworkIdle();

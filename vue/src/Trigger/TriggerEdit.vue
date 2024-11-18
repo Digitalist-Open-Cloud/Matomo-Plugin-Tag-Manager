@@ -602,6 +602,7 @@ export default defineComponent({
           this.$emit('changeTrigger', {
             trigger: this.trigger,
           });
+          TriggersStore.reload(this.idContainer, this.idContainerVersion);
           return;
         }
 
