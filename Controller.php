@@ -451,7 +451,7 @@ class Controller extends \Piwik\Plugin\Controller
         $idTag = $request->getIntegerParameter('idTag');
         $idContainerVersion = $request->getIntegerParameter('idContainerVersion');
 
-        $idTagNew = StaticContainer::get(Tag::class)->copyTag($this->idSite, $idContainerVersion, $idTag);
+        $idTagNew = StaticContainer::get(Tag::class)->copyTag($this->idSite, $idContainerVersion, $idTag, $idDestinationSite, $idDestinationContainer);
 
         $url = 'index.php?module=TagManager&action=manageTags&'
             . Url::getQueryStringFromParameters([
