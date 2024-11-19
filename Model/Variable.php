@@ -305,7 +305,9 @@ class Variable extends BaseModel
                     BaseTemplate::FIELD_VARIABLE_TYPE_COMPONENT
                 ])
             )
-            || ($entityType === 'CustomJsFunction' && $parameterMetadata['name'] === 'jsFunction'));
+            || ($entityType === 'CustomJsFunction' && $parameterMetadata['name'] === 'jsFunction')
+            || ($entityType === 'CustomHtml' && $parameterMetadata['name'] === 'customHtml')
+        );
     }
 
     /**
@@ -378,16 +380,22 @@ class Variable extends BaseModel
      * by reference so that the variable references within the entity can be updated with the new variable names.
      * @param int $idSite ID of the source site from which the variables are being copied
      * @param int $idContainerVersion ID of the source container version from which the variables are being copied
-     * @param int $idDestinationSite ID of the site to which the variables are being copied
-     * @param int $idDestinationContainerVersion ID of the container version to which the variables are being copied
+     * @param null|int $idDestinationSite Optional ID of the site to which the variables are being copied. In not
+     * specified, the idSite is used
+     * @param null|int $idDestinationVersion Optional ID of the container version to which the variables are being
+     * copied. If not specified, the idContainerVersion is used
      * @return void
      * @throws \Exception
      */
-    public function copyReferencedVariables(array &$entity, int $idSite, int $idContainerVersion, int $idDestinationSite, int $idDestinationContainerVersion): void
+    public function copyReferencedVariables(array &$entity, int $idSite, int $idContainerVersion, ?int $idDestinationSite = 0, ?int $idDestinationVersion = 0): void
     {
+        $idDestinationSite = $idDestinationSite ?: $idSite;
+        $idDestinationVersion = $idDestinationVersion ?: $idContainerVersion;
+
         $variableNameList = $this->listVariableNamesInParameters($entity);
+        $variableNameMap = [];
         foreach ($variableNameList as $variableName) {
-            $newVarName = $this->copyVariableByName($variableName, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationContainerVersion);
+            $newVarName = $this->copyVariableByNameIfNoEquivalent($variableName, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationVersion);
             // This might be empty if it's a preconfigured variable and doesn't exist in the DB. So, just skip it
             if (empty($newVarName)) {
                 continue;
@@ -395,6 +403,9 @@ class Variable extends BaseModel
 
             // Update the references in parameters with the new variable name
             $entity['parameters'] = $this->replaceVariableNameInParameters($entity, $variableName, $newVarName);
+
+            // Map out the original name to the new one
+            $variableNameMap[$variableName] = $newVarName;
         }
 
         // If the entity is not a trigger, we're done
@@ -408,7 +419,13 @@ class Variable extends BaseModel
                 continue;
             }
 
-            $newVarName = $this->copyVariableByName($condition['actual'], $idSite, $idContainerVersion, $idDestinationSite, $idDestinationContainerVersion);
+            // If the variable was already copied above, simply use the name of the new variable copy
+            if (in_array($condition['actual'], $variableNameList)) {
+                $entity['conditions'][$index]['actual'] = $variableNameMap[$condition['actual']];
+                continue;
+            }
+
+            $newVarName = $this->copyVariableByNameIfNoEquivalent($condition['actual'], $idSite, $idContainerVersion, $idDestinationSite, $idDestinationVersion);
             // This might be empty if it's a preconfigured variable and doesn't exist in the DB. So, just skip it
             if (empty($newVarName)) {
                 continue;
@@ -419,13 +436,55 @@ class Variable extends BaseModel
         }
     }
 
-    private function copyVariableByName(string $variableName, int $idSite, int $idContainerVersion, int $idDestinationSite, int $idDestinationContainerVersion): string
+    private function copyVariableByNameIfNoEquivalent(string $variableName, int $idSite, int $idContainerVersion, int $idDestinationSite, int $idDestinationContainerVersion): string
     {
         $variable = $this->findVariableByName($idSite, $idContainerVersion, $variableName);
         // This might be empty if it's a preconfigured variable and doesn't exist in the DB. So, just skip it
         if (empty($variable)) {
             return '';
         }
+
+        // If the site and container version are the same, we already know that the variable exists, so return its name
+        if ($idSite === $idDestinationSite && $idContainerVersion === $idDestinationContainerVersion) {
+            return $variableName;
+        }
+
+        // If no variable with that name is found, call the method to make a copy
+        $existingVariable = $this->findVariableByName($idDestinationSite, $idDestinationContainerVersion, $variableName);
+        if (empty($existingVariable)) {
+            return $this->copyVariableByName($variable, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationContainerVersion);
+        }
+
+        // If a duplicate variable already exists in the destination container, just use that variable
+        if (
+            $variable['type'] === $existingVariable['type']
+            && $variable['parameters'] == $existingVariable['parameters']
+            && $variable['lookup_table'] == $existingVariable['lookup_table']
+            && $variable['default_value'] == $existingVariable['default_value']
+        ) {
+            return $variableName;
+        }
+
+        // Since no existing duplicate was found, make a copy of the variable
+        return $this->copyVariableByName($variable, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationContainerVersion);
+    }
+
+    private function copyVariableByName(array $variable, int $idSite, int $idContainerVersion, int $idDestinationSite, int $idDestinationContainerVersion): string
+    {
+        if (
+            empty($variable)
+            || empty($variable['type'])
+            || empty($variable['name'])
+            || empty($variable['parameters'])
+            || !isset($variable['default_value'])
+            || !isset($variable['lookup_table'])
+            || !isset($variable['description'])
+        ) {
+            throw new \Exception('Variable name cannot be empty');
+        }
+
+        $variableName = $variable['name'];
+
 
         // Insert the new variable
         $newVarName = $this->dao->makeCopyNameUnique($idDestinationSite, $variableName, $idDestinationContainerVersion);

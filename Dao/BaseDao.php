@@ -88,10 +88,10 @@ abstract class BaseDao
     public function makeCopyNameUnique(int $idSite, string $name, ?int $idContainerVersion = null): string
     {
         $requireVersion = [
-            '\Piwik\Plugins\TagManager\Dao\TagsDao',
-            '\Piwik\Plugins\TagManager\Dao\TriggersDao',
-            '\Piwik\Plugins\TagManager\Dao\VariablesDao',
-            '\Piwik\Plugins\TagManager\Dao\ContainerVersionsDao',
+            'Piwik\Plugins\TagManager\Dao\TagsDao',
+            'Piwik\Plugins\TagManager\Dao\TriggersDao',
+            'Piwik\Plugins\TagManager\Dao\VariablesDao',
+            'Piwik\Plugins\TagManager\Dao\ContainerVersionsDao',
         ];
         if (in_array(get_class($this), $requireVersion) && $idContainerVersion === null) {
             throw new \Exception('The idContainerVersion is required for Tags, Triggers, and Variables');

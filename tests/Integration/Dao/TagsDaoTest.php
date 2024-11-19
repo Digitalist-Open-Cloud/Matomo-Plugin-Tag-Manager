@@ -663,6 +663,60 @@ class TagsDaoTest extends IntegrationTestCase
         $this->assertSame(null, $tags[2]['deleted_date']);
     }
 
+    public function testMakeCopyNameUniqueNoContainerVersion()
+    {
+        $this->expectException(\Exception::class);
+        $this->dao->makeCopyNameUnique(1, 'FooTag');
+    }
+
+    /**
+     * @dataProvider getMakeCopyNameUniqueTestData
+     * @param string $name
+     * @param array $tags
+     * @param string $expected
+     * @return void
+     */
+    public function testMakeCopyNameUnique(string $name, array $tags, string $expected)
+    {
+        $idSite = 1;
+        $idContainerVersion = 5;
+        foreach ($tags as $number) {
+            $tempName = "FooTag ($number)";
+            if ($number < 1) {
+                $tempName = "FooTag";
+            }
+            $this->createTag($idSite, $idContainerVersion, $tempName);
+        }
+
+        $updatedName = $this->dao->makeCopyNameUnique($idSite, $name, $idContainerVersion);
+        $this->assertSame($expected, $updatedName);
+    }
+
+    public function getMakeCopyNameUniqueTestData(): array
+    {
+        return [
+            ['FooTag', [], 'FooTag'],
+            ['FooTag (1)', [], 'FooTag (1)'],
+            ['FooTag', [0], 'FooTag (1)'],
+            ['FooTag (1)', [0], 'FooTag (1)'],
+            ['FooTag', [1], 'FooTag'],
+            ['FooTag', [1, 2], 'FooTag'],
+            ['FooTag', [1, 2, 3], 'FooTag'],
+            ['FooTag (1)', [1], 'FooTag (2)'],
+            ['FooTag (1)', [1, 2], 'FooTag (3)'],
+            ['FooTag (1)', [1, 2, 3], 'FooTag (4)'],
+            ['FooTag (2)', [1], 'FooTag (2)'],
+            ['FooTag (2)', [1, 2], 'FooTag (3)'],
+            ['FooTag (2)', [1, 2, 3], 'FooTag (4)'],
+            ['FooTag (3)', [1], 'FooTag (3)'],
+            ['FooTag (3)', [1, 2], 'FooTag (3)'],
+            ['FooTag (3)', [1, 2, 3], 'FooTag (4)'],
+            ['FooTag(1)', [1, 2, 3], 'FooTag(1)'],
+            ['SomeOtherName', [1, 2, 3], 'SomeOtherName'],
+            ['SomeOtherName (1)', [1, 2, 3], 'SomeOtherName (1)'],
+        ];
+    }
+
     private function createTag($idSite = 1, $idContainerVersion = 5, $name = 'FooTag')
     {
         $type = 'CustomFoo';

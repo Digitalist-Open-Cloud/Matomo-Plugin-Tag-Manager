@@ -14,8 +14,10 @@ use Piwik\Plugins\TagManager\Dao\VariablesDao;
 use Piwik\Plugins\TagManager\Input\Name;
 use Piwik\Plugins\TagManager\Model\Comparison;
 use Piwik\Plugins\TagManager\Model\Tag;
+use Piwik\Plugins\TagManager\Model\Trigger;
 use Piwik\Plugins\TagManager\Model\Variable;
 use Piwik\Plugins\TagManager\TagManager;
+use Piwik\Plugins\TagManager\Template\Tag\CustomHtmlTag;
 use Piwik\Plugins\TagManager\Template\Tag\MatomoTag;
 use Piwik\Plugins\TagManager\Template\Trigger\WindowLoadedTrigger;
 use Piwik\Plugins\TagManager\Template\Variable\CustomJsFunctionVariable;
@@ -631,6 +633,48 @@ class VariableTest extends IntegrationTestCase
     {
         // we test the references apart from this via API in system tests
         $this->assertSame([], $this->model->getContainerVariableReferences($this->idSite, $this->containerVersion1, $this->idVariable1));
+    }
+
+    public function testCopyReferencedVariables()
+    {
+        $variable = $this->model->getContainerVariable($this->idSite, $this->containerVersion1, $this->idVariable1);
+        $variableName = $variable['name'];
+        $trigger = StaticContainer::get(Trigger::class);
+        $idTrigger1 = $trigger->addContainerTrigger($this->idSite, $this->containerVersion1, WindowLoadedTrigger::ID, 'MyTrigger1', [], []);
+        $tagModel = StaticContainer::get(Tag::class);
+        $idTag = $tagModel->addContainerTag($this->idSite, $this->containerVersion1, CustomHtmlTag::ID, 'TagReferencingVariable', ['customHtml' => '<h2>Hello  {{' . $variableName . '}}</h2>'], [$idTrigger1], [], Tag::FIRE_LIMIT_UNLIMITED, 0, 9999, $this->now, $this->now);
+        $initialTag = $tagModel->getContainerTag($this->idSite, $this->containerVersion1, $idTag);
+        $tag = $tagModel->getContainerTag($this->idSite, $this->containerVersion1, $idTag);
+
+        $this->assertCount(1, $this->model->getContainerVariables($this->idSite, $this->containerVersion1), 'There should be one variable.');
+
+        $this->model->copyReferencedVariables($tag, $this->idSite, $this->containerVersion1);
+
+        $this->assertCount(1, $this->model->getContainerVariables($this->idSite, $this->containerVersion1), 'There should be one variable.');
+        $this->assertEquals($initialTag, $tag, 'The tag should still be the same');
+    }
+
+    public function testCopyReferencedVariablesToDifferentContainer()
+    {
+        $variable = $this->model->getContainerVariable($this->idSite, $this->containerVersion1, $this->idVariable1);
+        $variableName = $variable['name'];
+        $trigger = StaticContainer::get(Trigger::class);
+        $idTrigger1 = $trigger->addContainerTrigger($this->idSite, $this->containerVersion1, WindowLoadedTrigger::ID, 'MyTrigger1', [], []);
+        $tagModel = StaticContainer::get(Tag::class);
+        $idTag = $tagModel->addContainerTag($this->idSite, $this->containerVersion1, CustomHtmlTag::ID, 'TagReferencingVariable', ['customHtml' => '<h2>Hello  {{' . $variableName . '}}</h2>'], [$idTrigger1], [], Tag::FIRE_LIMIT_UNLIMITED, 0, 9999, $this->now, $this->now);
+        $initialTag = $tagModel->getContainerTag($this->idSite, $this->containerVersion1, $idTag);
+        $tag = $tagModel->getContainerTag($this->idSite, $this->containerVersion1, $idTag);
+
+        $this->assertCount(0, $this->model->getContainerVariables($this->idSite, $this->containerVersion2), 'There should be no variables yet.');
+
+        $this->model->copyReferencedVariables($tag, $this->idSite, $this->containerVersion1, $this->idSite, $this->containerVersion2);
+        $this->assertCount(1, $this->model->getContainerVariables($this->idSite, $this->containerVersion2), 'There should be one variable.');
+        $this->assertEquals($initialTag, $tag, 'The tag should still be the same');
+
+        // Test that running copy again doesn't result in another copy
+        $this->model->copyReferencedVariables($tag, $this->idSite, $this->containerVersion1, $this->idSite, $this->containerVersion2);
+        $this->assertEquals($initialTag, $tag, 'The tag should still be the same');
+        $this->assertCount(1, $this->model->getContainerVariables($this->idSite, $this->containerVersion2), 'There should be one variable.');
     }
 
     private function addContainerVariable($idSite, $idContainerVersion = 5, $type = null, $name = 'MyName', $parameters = [], $defaultValue = '', $lookupTable = [], $description = '')

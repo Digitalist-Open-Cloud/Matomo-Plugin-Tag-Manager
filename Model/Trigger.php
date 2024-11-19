@@ -162,12 +162,16 @@ class Trigger extends BaseModel
      * @param int $idSite
      * @param int $idContainerVersion
      * @param int $idTrigger
-     * @param int $idDestinationSite
-     * @param int $idDestinationVersion
+     * @param null|int $idDestinationSite Optional ID of the site to which to copy the trigger. If empty, isSite is used
+     * @param null|int $idDestinationVersion Optional ID of the version to which to copy the trigger. If empty,
+     * idContainerVersion is used
      * @return int ID of the newly created trigger or the ID of an existing trigger than matches the trigger to be copied
      */
-    public function copyTriggerIfNoEquivalent(int $idSite, int $idContainerVersion, int $idTrigger, int $idDestinationSite, int $idDestinationVersion): int
+    public function copyTriggerIfNoEquivalent(int $idSite, int $idContainerVersion, int $idTrigger, ?int $idDestinationSite = 0, ?int $idDestinationVersion = 0): int
     {
+        $idDestinationSite = $idDestinationSite ?: $idSite;
+        $idDestinationVersion = $idDestinationVersion ?: $idContainerVersion;
+
         $trigger = $this->getContainerTrigger($idSite, $idContainerVersion, $idTrigger);
         $existingTrigger = $this->findTriggerByName($idDestinationSite, $idDestinationVersion, $trigger['name']);
         // If there's already a trigger that matches, simply use it
@@ -177,7 +181,7 @@ class Trigger extends BaseModel
 
         StaticContainer::get(Variable::class)->copyReferencedVariables($trigger, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationVersion);
 
-        $newName = $this->dao->makeCopyNameUnique($idDestinationSite, $idDestinationVersion, $trigger['name']);
+        $newName = $this->dao->makeCopyNameUnique($idDestinationSite, $trigger['name'], $idDestinationVersion);
         return $this->addContainerTrigger(
             $idDestinationSite,
             $idDestinationVersion,

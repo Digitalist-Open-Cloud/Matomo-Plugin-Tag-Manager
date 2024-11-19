@@ -10,12 +10,17 @@
 namespace Piwik\Plugins\TagManager\tests\Integration\Model;
 
 use Piwik\Container\StaticContainer;
+use Piwik\Plugins\TagManager\Context\WebContext;
 use Piwik\Plugins\TagManager\Dao\TagsDao;
 use Piwik\Plugins\TagManager\Input\Name;
+use Piwik\Plugins\TagManager\Model\Container;
 use Piwik\Plugins\TagManager\Model\Tag;
+use Piwik\Plugins\TagManager\Model\Trigger;
+use Piwik\Plugins\TagManager\Model\Variable;
 use Piwik\Plugins\TagManager\TagManager;
 use Piwik\Plugins\TagManager\Template\Tag\CustomHtmlTag;
 use Piwik\Plugins\TagManager\Template\Trigger\WindowLoadedTrigger;
+use Piwik\Plugins\TagManager\Template\Variable\DataLayerVariable;
 use Piwik\Plugins\TagManager\tests\Framework\TestCase\IntegrationTestCase;
 use Piwik\Tests\Framework\Fixture;
 use Piwik\Url;
@@ -973,6 +978,114 @@ class TagTest extends IntegrationTestCase
         $this->expectExceptionMessage('Custom HTML: A value needs to be provided.');
 
         $this->model->updateParameters($this->idSite, $this->containerVersion1, $this->idTag1, $parameters = ['customHtml' => '']);
+    }
+
+    public function testCopyTag()
+    {
+        $idNewTag = $this->model->copyTag($this->idSite, $this->containerVersion1, $this->idTag1);
+
+        $tag1 = $this->model->getContainerTag($this->idSite, $this->containerVersion1, $this->idTag1);
+        $newTag = $this->model->getContainerTag($this->idSite, $this->containerVersion1, $idNewTag);
+
+        // Make sure that the name is different and then clear it
+        $this->assertNotSame($tag1['name'], $newTag['name']);
+        unset($tag1['name']);
+        unset($newTag['name']);
+        unset($tag1['idtag']);
+        unset($newTag['idtag']);
+
+        $this->assertEquals($tag1, $newTag);
+    }
+
+    public function testCopyTagDifferentContainer()
+    {
+        $containerModel = StaticContainer::get(Container::class);
+        $context = WebContext::ID;
+        $description = 'My description';
+
+        $idContainer = $containerModel->addContainer($this->idSite, $context, 'FooContainer', $description, 0, 0, 0);
+        $container = $containerModel->getContainer($this->idSite, $idContainer);
+        $idContainerVersion = $container['draft']['idcontainerversion'];
+
+        $triggerModel = StaticContainer::get(Trigger::class);
+        $this->assertCount(0, $triggerModel->getContainerTriggers($this->idSite, $idContainerVersion), 'There should be no triggers in this container.');
+
+        $idNewTag = $this->model->copyTag($this->idSite, $this->containerVersion1, $this->idTag1, $this->idSite, $idContainer);
+
+        $this->assertCount(1, $triggerModel->getContainerTriggers($this->idSite, $idContainerVersion), 'The trigger should have been copied to the new container.');
+
+        $tag1 = $this->model->getContainerTag($this->idSite, $this->containerVersion1, $this->idTag1);
+        $newTag = $this->model->getContainerTag($this->idSite, $idContainerVersion, $idNewTag);
+
+        // Make sure that the name is different and then clear it
+        $this->assertNotSame($tag1['name'], $newTag['name']);
+        unset($tag1['name']);
+        unset($newTag['name']);
+        $this->assertNotSame($tag1['idcontainerversion'], $newTag['idcontainerversion']);
+        unset($tag1['idcontainerversion']);
+        unset($newTag['idcontainerversion']);
+        $this->assertCount(1, $tag1['fire_trigger_ids']);
+        $this->assertCount(1, $newTag['fire_trigger_ids']);
+        // Make sure that the trigger IDs are different and then clear them
+        $this->assertNotSame($tag1['fire_trigger_ids'][0], $newTag['fire_trigger_ids'][0]);
+        unset($tag1['fire_trigger_ids']);
+        unset($newTag['fire_trigger_ids']);
+        unset($tag1['idtag']);
+        unset($newTag['idtag']);
+
+        $this->assertEquals($tag1, $newTag);
+    }
+
+    public function testCopyTagDifferentContainerReferencingVariables()
+    {
+        // Create a tag which references a variable
+        $variableName = 'TestVariableToReference';
+        $variableModel = StaticContainer::get(Variable::class);
+        $variableModel->addContainerVariable($this->idSite, $this->containerVersion1, DataLayerVariable::ID, $variableName, ['dataLayerName' => 'myVariable'], '', []);
+        $this->idTag1 = $this->addContainerTag($this->idSite, $this->containerVersion1, null, 'TagReferencingVariable', ['customHtml' => '<h2>Hello  {{' . $variableName . '}}</h2>']);
+
+        $containerModel = StaticContainer::get(Container::class);
+        $context = WebContext::ID;
+        $description = 'My description';
+
+        $idContainer = $containerModel->addContainer($this->idSite, $context, 'FooContainer', $description, 0, 0, 0);
+        $container = $containerModel->getContainer($this->idSite, $idContainer);
+        $idContainerVersion = $container['draft']['idcontainerversion'];
+
+        // Update trigger to reference variable
+        $tag1 = $this->model->getContainerTag($this->idSite, $this->containerVersion1, $this->idTag1);
+        $this->assertCount(1, $tag1['fire_trigger_ids']);
+        $triggerModel = StaticContainer::get(Trigger::class);
+        $trigger = $triggerModel->getContainerTrigger($this->idSite, $this->containerVersion1, $tag1['fire_trigger_ids'][0]);
+        $variableName2 = 'AnotherVariableToReference';
+        $variableModel->addContainerVariable($this->idSite, $this->containerVersion1, DataLayerVariable::ID, $variableName2, ['dataLayerName' => 'myVariable'], '', []);
+        $conditions = [['comparison' => 'equals', 'actual' => $variableName2, 'expected' => 'someValue']]	;
+        $triggerModel->updateContainerTrigger($this->idSite, $this->containerVersion1, $tag1['fire_trigger_ids'][0], $trigger['name'], $trigger['parameters'], $conditions, $trigger['description']);
+
+        $this->assertCount(0, $variableModel->getContainerVariables($this->idSite, $idContainerVersion), 'There should be no variables in the container.');
+
+        $idNewTag = $this->model->copyTag($this->idSite, $this->containerVersion1, $this->idTag1, $this->idSite, $idContainer);
+
+        $this->assertCount(2, $variableModel->getContainerVariables($this->idSite, $idContainerVersion), 'The variables should have been copied to the new container.');
+
+        $newTag = $this->model->getContainerTag($this->idSite, $idContainerVersion, $idNewTag);
+
+        // Make sure that the name is different and then clear it
+        $this->assertNotSame($tag1['name'], $newTag['name']);
+        unset($tag1['name']);
+        unset($newTag['name']);
+        $this->assertNotSame($tag1['idcontainerversion'], $newTag['idcontainerversion']);
+        unset($tag1['idcontainerversion']);
+        unset($newTag['idcontainerversion']);
+        $this->assertCount(1, $newTag['fire_trigger_ids']);
+        // Make sure that the trigger IDs are different and then clear them
+        $this->assertNotSame($tag1['fire_trigger_ids'][0], $newTag['fire_trigger_ids'][0]);
+        unset($tag1['fire_trigger_ids']);
+        unset($newTag['fire_trigger_ids']);
+        unset($tag1['idtag']);
+        unset($newTag['idtag']);
+
+        $this->assertEquals($tag1, $newTag);
     }
 
     private function addContainerTag($idSite, $idContainerVersion = 5, $type = null, $name = 'MyName', $parameters = [], $fireTriggerIds = [1], $blockTriggerIds = [], $fireLimit = null, $fireDelay = 0, $priority = 9999, $startDate = null, $endDate = null, $description = '', $status = '')
