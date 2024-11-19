@@ -114,6 +114,7 @@ export default defineComponent({
   },
   created() {
     this.onSiteChange();
+    this.idDestinationContainer = this.idSourceContainer;
   },
   watch: {
     site() {
