@@ -170,6 +170,7 @@ class ContainerReleaseDao extends BaseDao implements TagManagerDao
 
     protected function isNameAlreadyUsed(int $idSite, string $name, ?int $idContainerVersion = null): bool
     {
+        // This is hard coded since releases don't have a name and therefore don't use this method
         return true;
     }
 

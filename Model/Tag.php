@@ -202,7 +202,6 @@ class Tag extends BaseModel
     public function copyTag(int $idSite, int $idContainerVersion, int $idTag, ?int $idDestinationSite = null, ?string $idDestinationContainer = null): int
     {
         $tag = $this->getContainerTag($idSite, $idContainerVersion, $idTag);
-        $newName = $this->dao->makeCopyNameUnique($idSite, $tag['name'], $idContainerVersion);
 
         $idDestinationVersion = $idContainerVersion;
         if ($idDestinationSite !== null && !empty($idDestinationContainer)) {
@@ -210,6 +209,8 @@ class Tag extends BaseModel
         }
         // If the destination site isn't set, simply use the source site
         $idDestinationSite = $idDestinationSite ?? $idSite;
+
+        $newName = $this->dao->makeCopyNameUnique($idDestinationSite, $tag['name'], $idDestinationVersion);
 
         return $this->addContainerTag(
             $idDestinationSite,
@@ -229,7 +230,7 @@ class Tag extends BaseModel
         );
     }
 
-    private function copyReferencedVariablesAndTriggers(array &$tag, int $idSite, int $idContainerVersion, int $idDestinationSite, string $idDestinationContainer): string
+    private function copyReferencedVariablesAndTriggers(array &$tag, int $idSite, int $idContainerVersion, int $idDestinationSite, string $idDestinationContainer): int
     {
         $container = StaticContainer::get(Container::class);
         $destinationContainer = $container->getContainer($idDestinationSite, $idDestinationContainer);
@@ -238,10 +239,13 @@ class Tag extends BaseModel
         }
 
         // Copy the new tag to the draft version of the destination container
-        $idDestinationVersion = $destinationContainer['draft']['idcontainerversion'];
-        if (empty($idDestinationVersion)) {
+        $idDestinationVersion = $destinationContainer['draft']['idcontainerversion'] ?? null;
+        // Make sure that the version is set and is an integer value
+        if (empty($idDestinationVersion) || !(is_int($idDestinationVersion) || (is_string($idDestinationVersion) && ctype_digit($idDestinationVersion)))) {
             throw new \Exception(Piwik::translate('TagManager_ErrorContainerVersionDoesNotExist'));
         }
+        // Make sure that the type is int
+        $idDestinationVersion = intval($idDestinationVersion);
 
         // Copy all the referenced variables and triggers and replace those references with references to the newly copied ones
         StaticContainer::get(Variable::class)->copyReferencedVariables($tag, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationVersion);

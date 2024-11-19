@@ -1017,10 +1017,7 @@ class TagTest extends IntegrationTestCase
         $tag1 = $this->model->getContainerTag($this->idSite, $this->containerVersion1, $this->idTag1);
         $newTag = $this->model->getContainerTag($this->idSite, $idContainerVersion, $idNewTag);
 
-        // Make sure that the name is different and then clear it
-        $this->assertNotSame($tag1['name'], $newTag['name']);
-        unset($tag1['name']);
-        unset($newTag['name']);
+        // Clear the values that won't match
         $this->assertNotSame($tag1['idcontainerversion'], $newTag['idcontainerversion']);
         unset($tag1['idcontainerversion']);
         unset($newTag['idcontainerversion']);
@@ -1034,6 +1031,34 @@ class TagTest extends IntegrationTestCase
         unset($newTag['idtag']);
 
         $this->assertEquals($tag1, $newTag);
+
+        // Copy again to make sure that copying multiple times to the same container works correctly
+        $idNewTag2 = $this->model->copyTag($this->idSite, $this->containerVersion1, $this->idTag1, $this->idSite, $idContainer);
+
+        $this->assertCount(1, $triggerModel->getContainerTriggers($this->idSite, $idContainerVersion), 'The trigger should have been copied to the new container.');
+
+        $tag1 = $this->model->getContainerTag($this->idSite, $this->containerVersion1, $this->idTag1);
+        $newTag = $this->model->getContainerTag($this->idSite, $idContainerVersion, $idNewTag);
+        $newTag2 = $this->model->getContainerTag($this->idSite, $idContainerVersion, $idNewTag2);
+
+        // Make sure that the name is different and then clear it
+        $this->assertNotSame($tag1['name'], $newTag2['name']);
+        $this->assertNotSame($newTag['name'], $newTag2['name']);
+        unset($tag1['name']);
+        unset($newTag2['name']);
+        $this->assertNotSame($tag1['idcontainerversion'], $newTag2['idcontainerversion']);
+        unset($tag1['idcontainerversion']);
+        unset($newTag2['idcontainerversion']);
+        $this->assertCount(1, $tag1['fire_trigger_ids']);
+        $this->assertCount(1, $newTag2['fire_trigger_ids']);
+        // Make sure that the trigger IDs are different and then clear them
+        $this->assertNotSame($tag1['fire_trigger_ids'][0], $newTag2['fire_trigger_ids'][0]);
+        unset($tag1['fire_trigger_ids']);
+        unset($newTag2['fire_trigger_ids']);
+        unset($tag1['idtag']);
+        unset($newTag2['idtag']);
+
+        $this->assertEquals($tag1, $newTag2);
     }
 
     public function testCopyTagDifferentContainerReferencingVariables()
@@ -1070,10 +1095,7 @@ class TagTest extends IntegrationTestCase
 
         $newTag = $this->model->getContainerTag($this->idSite, $idContainerVersion, $idNewTag);
 
-        // Make sure that the name is different and then clear it
-        $this->assertNotSame($tag1['name'], $newTag['name']);
-        unset($tag1['name']);
-        unset($newTag['name']);
+        // Clear the values that won't match
         $this->assertNotSame($tag1['idcontainerversion'], $newTag['idcontainerversion']);
         unset($tag1['idcontainerversion']);
         unset($newTag['idcontainerversion']);
