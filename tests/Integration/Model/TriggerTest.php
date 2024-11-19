@@ -613,7 +613,7 @@ class TriggerTest extends IntegrationTestCase
         $variableName = 'TestVariableToReference';
         $variableModel = StaticContainer::get(Variable::class);
         $variableModel->addContainerVariable($this->idSite, $this->containerVersion1, DataLayerVariable::ID, $variableName, ['dataLayerName' => 'myVariable'], '', []);
-        $conditions = [['comparison' => 'equals', 'actual' => $variableName, 'expected' => 'someValue']]	;
+        $conditions = [['comparison' => 'equals', 'actual' => $variableName, 'expected' => 'someValue']]    ;
         $this->model->updateContainerTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1, $trigger1['name'], $trigger1['parameters'], $conditions, $trigger1['description']);
 
         $this->assertCount(0, $variableModel->getContainerVariables($this->idSite, $this->containerVersion2), 'There should be no variables in the container.');

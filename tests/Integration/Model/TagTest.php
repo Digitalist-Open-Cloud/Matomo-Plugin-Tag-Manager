@@ -1059,7 +1059,7 @@ class TagTest extends IntegrationTestCase
         $trigger = $triggerModel->getContainerTrigger($this->idSite, $this->containerVersion1, $tag1['fire_trigger_ids'][0]);
         $variableName2 = 'AnotherVariableToReference';
         $variableModel->addContainerVariable($this->idSite, $this->containerVersion1, DataLayerVariable::ID, $variableName2, ['dataLayerName' => 'myVariable'], '', []);
-        $conditions = [['comparison' => 'equals', 'actual' => $variableName2, 'expected' => 'someValue']]	;
+        $conditions = [['comparison' => 'equals', 'actual' => $variableName2, 'expected' => 'someValue']]   ;
         $triggerModel->updateContainerTrigger($this->idSite, $this->containerVersion1, $tag1['fire_trigger_ids'][0], $trigger['name'], $trigger['parameters'], $conditions, $trigger['description']);
 
         $this->assertCount(0, $variableModel->getContainerVariables($this->idSite, $idContainerVersion), 'There should be no variables in the container.');
