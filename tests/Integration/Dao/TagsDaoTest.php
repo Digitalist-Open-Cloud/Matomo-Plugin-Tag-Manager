@@ -685,10 +685,15 @@ class TagsDaoTest extends IntegrationTestCase
             if ($number < 1) {
                 $tempName = "FooTag";
             }
+
+            if ($tags == [0] && strpos($name, 'FooTag') === false) {
+                $tempName = $name;
+            }
             $this->createTag($idSite, $idContainerVersion, $tempName);
         }
 
         $updatedName = $this->dao->makeCopyNameUnique($idSite, $name, $idContainerVersion);
+        $this->assertLessThanOrEqual(255, strlen($updatedName), 'The name should not exceed the 255 characters');
         $this->assertSame($expected, $updatedName);
     }
 
@@ -714,6 +719,11 @@ class TagsDaoTest extends IntegrationTestCase
             ['FooTag(1)', [1, 2, 3], 'FooTag(1)'],
             ['SomeOtherName', [1, 2, 3], 'SomeOtherName'],
             ['SomeOtherName (1)', [1, 2, 3], 'SomeOtherName (1)'],
+            [
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcde',
+                [0],
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890A (1)'
+            ],
         ];
     }
 

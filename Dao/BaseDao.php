@@ -150,6 +150,12 @@ abstract class BaseDao
             ++$number;
             $newName = str_replace($matches[0], '', $name);
         }
+
+        // Make sure that we don't exceed the max length of 255 characters
+        if (strlen($newName . " ($number)") > 255) {
+            $newName = substr($newName, 0, 251);
+        }
+
         $newName .= " ($number)";
 
         return $newName;

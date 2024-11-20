@@ -218,7 +218,7 @@ export default defineComponent({
 
       AjaxHelper.fetch(requestParams).then((response) => {
         // If there was an issue with the response, display a generic error
-        if (!response || !response.success || !response.urlToNewCopy) {
+        if (!response || !response.isSuccess || !response.urlToNewCopy) {
           const message = translate('General_ErrorRequest', '', '');
           const notificationInstanceId = NotificationsStore.show({
             message,
@@ -227,12 +227,15 @@ export default defineComponent({
             type: 'transient',
           });
           NotificationsStore.scrollToNotification(notificationInstanceId);
+
+          window.Piwik_Popover.close();
+          return;
         }
 
         // Close the modal, reload the store, and display notification
-        window.Piwik_Popover.close();
         this.reloadEntityStore();
         this.displaySuccessNotification(response.urlToNewCopy);
+        window.Piwik_Popover.close();
       });
     },
     reloadEntityStore() {

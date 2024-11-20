@@ -576,7 +576,7 @@ describe("ContainerTag", function () {
       await page.goto(container1Base);
       await clickFirstRowTableAction('icon-content-copy', 3);
       await page.evaluate(() => $('div.copyMtmObjectDialog button.btn').click());
-      await page.waitForTimeout(250);
+      await page.waitForNetworkIdle();
       await capture.page(page, 'copy_tag_success');
     });
 });
