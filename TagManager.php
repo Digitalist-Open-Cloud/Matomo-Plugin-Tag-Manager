@@ -949,6 +949,11 @@ class TagManager extends \Piwik\Plugin
         $result[] = 'TagManager_VariableLowercase';
         $result[] = 'TagManager_ChooseWebsite';
         $result[] = 'TagManager_CopyContainerNote';
+        $result[] = 'TagManager_CopyXSuccess';
+        $result[] = 'TagManager_ContainerLowercase';
+        $result[] = 'TagManager_TagLowercase';
+        $result[] = 'TagManager_TriggerLowercase';
+        $result[] = 'TagManager_VariableLowercase';
     }
 
     public function getStylesheetFiles(&$stylesheets)

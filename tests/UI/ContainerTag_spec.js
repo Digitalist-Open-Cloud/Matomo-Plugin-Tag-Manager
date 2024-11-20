@@ -552,7 +552,7 @@ describe("ContainerTag", function () {
     });
 
     it('should select container to copy tag to', async function () {
-        await page.evaluate(() => $('div.matomo-field-select ul li:nth-child(2)').click());
+        await page.evaluate(() => $('div.matomo-field-select ul li:first').click());
         await page.waitForTimeout(250);
         pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTag');
         expect(await pageWrap.screenshot()).to.matchImage('copy_tag_container_selected');

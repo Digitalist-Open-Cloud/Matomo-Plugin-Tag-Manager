@@ -32,7 +32,6 @@ class Controller extends \Piwik\Plugin\Controller
 {
     public const COPY_CONTAINER_NONCE = 'TagManager.copyContainer';
     public const COPY_TAG_NONCE = 'TagManager.copyTag';
-    public const COPY_TAG_NOTIFICATION = 'tagCopiedNotification';
 
     /**
      * @var AccessValidator
@@ -182,15 +181,6 @@ class Controller extends \Piwik\Plugin\Controller
                 ]),
             ]
         ]);
-
-        // Change the notification for persistent to transient. This is a hack because setting it as transient from the beginning wasn't working
-        $notifications = Notification\Manager::getAllNotificationsToDisplay();
-        if (key_exists(self::COPY_TAG_NOTIFICATION, $notifications)) {
-            $notification = $notifications[self::COPY_TAG_NOTIFICATION];
-            Notification\Manager::cancel(self::COPY_TAG_NOTIFICATION);
-            $notification->type = Notification::TYPE_TRANSIENT;
-            Notification\Manager::notify(self::COPY_TAG_NOTIFICATION, $notification);
-        }
 
         return $this->renderManageContainerTemplate('manageTags', [ 'tagsHelpText' => $tagsHelpText ]);
     }
@@ -398,19 +388,8 @@ class Controller extends \Piwik\Plugin\Controller
                 'idSite' => $idDestinationSite,
                 'idContainer' => $idContainerNew
             ]);
-        $successMessage = Piwik::translate('TagManager_CopyXSuccess', [
-            '<a href="' . $url . '">',
-            '</a>',
-            Piwik::translate('TagManager_ContainerLowercase')
-        ]);
-        $notification = new Notification($successMessage);
-        $notification->raw = true;
-        $notification->context = Notification::CONTEXT_SUCCESS;
-        $notification->type = Notification::TYPE_TRANSIENT;
-        Notification\Manager::notify('containerCopied', $notification);
 
-        // Once the copy is done, we should be able to redirect to the manage screen
-        $this->redirectToIndex('TagManager', 'manageContainers', $this->idSite);
+        return json_encode(['isSuccess' => true, 'urlToNewCopy' => $url]);
     }
 
     public function copyTagDialog()
@@ -444,7 +423,6 @@ class Controller extends \Piwik\Plugin\Controller
 
         $request = \Piwik\Request::fromRequest();
         $idDestinationSite = $request->getIntegerParameter('idDestinationSite');
-        $idSourceContainer = $request->getStringParameter('idSourceContainer');
         $idDestinationContainer = $request->getStringParameter('idDestinationContainer');
         // Confirm tha the user has permission to copy to the selected site
         $this->accessValidator->checkWriteCapability($idDestinationSite);
@@ -460,20 +438,8 @@ class Controller extends \Piwik\Plugin\Controller
             ]) . '#?' . Url::getQueryStringFromParameters([
                 'idTag' => $idTagNew,
             ]);
-        $successMessage = Piwik::translate('TagManager_CopyXSuccess', [
-            '<a href="' . $url . '">',
-            '</a>',
-            Piwik::translate('TagManager_TagLowercase')
-        ]);
-        $notification = new Notification($successMessage);
-        $notification->raw = true;
-        $notification->context = Notification::CONTEXT_SUCCESS;
-        // Set this as persistent for now, since it wasn't displaying otherwise. We convert it to transient later
-        $notification->type = Notification::TYPE_PERSISTENT;
-        Notification\Manager::notify(self::COPY_TAG_NOTIFICATION, $notification);
 
-        // Once the copy is done, we should be able to redirect to the manage screen
-        $this->redirectToIndex('TagManager', 'manageTags', $this->idSite, null, null, ['idContainer' => $idSourceContainer]);
+        return json_encode(['isSuccess' => true, 'urlToNewCopy' => $url]);
     }
 
     protected function renderTemplate($template, array $variables = array())

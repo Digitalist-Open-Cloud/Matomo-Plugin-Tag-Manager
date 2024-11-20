@@ -10741,19 +10741,18 @@ function getCircularReplacer() {
 Debuggingvue_type_script_lang_ts.render = Debuggingvue_type_template_id_1ae9acce_render
 
 /* harmony default export */ var Debugging = (Debuggingvue_type_script_lang_ts);
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue?vue&type=template&id=3f975526
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue?vue&type=template&id=3dbbf457
 
-var CopyDialogvue_type_template_id_3f975526_hoisted_1 = {
+var CopyDialogvue_type_template_id_3dbbf457_hoisted_1 = {
   class: "copyMtmObjectDialog"
 };
-var CopyDialogvue_type_template_id_3f975526_hoisted_2 = ["innerHTML"];
-var CopyDialogvue_type_template_id_3f975526_hoisted_3 = ["href"];
-function CopyDialogvue_type_template_id_3f975526_render(_ctx, _cache, $props, $setup, $data, $options) {
+var CopyDialogvue_type_template_id_3dbbf457_hoisted_2 = ["innerHTML"];
+function CopyDialogvue_type_template_id_3dbbf457_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Field = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Field");
 
   var _directive_form = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveDirective"])("form");
 
-  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", CopyDialogvue_type_template_id_3f975526_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("h2", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.getCopyDialogTitle), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("p", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.getCopyDescription), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", CopyDialogvue_type_template_id_3dbbf457_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("h2", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.getCopyDialogTitle), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("p", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.getCopyDescription), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
     uicontrol: "site",
     name: "destinationSite",
     title: _ctx.translate('TagManager_ChooseWebsite'),
@@ -10777,14 +10776,20 @@ function CopyDialogvue_type_template_id_3f975526_render(_ctx, _cache, $props, $s
     key: 1,
     class: "copyNote",
     innerHTML: _ctx.$sanitize(_ctx.getCopyContainerNote)
-  }, null, 8, CopyDialogvue_type_template_id_3f975526_hoisted_2)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("a", {
-    href: _ctx.getCopyUrl,
-    class: "btn"
-  }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Copy')), 9, CopyDialogvue_type_template_id_3f975526_hoisted_3)], 512), [[_directive_form]])]);
+  }, null, 8, CopyDialogvue_type_template_id_3dbbf457_hoisted_2)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("button", {
+    class: "btn",
+    onClick: _cache[2] || (_cache[2] = function () {
+      return _ctx.performCopy && _ctx.performCopy.apply(_ctx, arguments);
+    })
+  }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Copy')), 1)], 512), [[_directive_form]])]);
 }
-// CONCATENATED MODULE: ./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue?vue&type=template&id=3f975526
+// CONCATENATED MODULE: ./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue?vue&type=template&id=3dbbf457
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/TagManager/vue/src/CopyDialog/CopyDialog.vue?vue&type=script&lang=ts
+
+
+
+
 
 
 
@@ -10886,6 +10891,139 @@ function CopyDialogvue_type_template_id_3f975526_render(_ctx, _cache, $props, $s
           });
         });
       });
+    },
+    performCopy: function performCopy() {
+      var _this$site2,
+          _this2 = this;
+
+      var requestParams = {
+        module: 'TagManager',
+        action: '',
+        idSite: this.defaultSite.id,
+        idDestinationSite: (_this$site2 = this.site) !== null && _this$site2 !== void 0 && _this$site2.id ? this.site.id : 0,
+        nonce: this.copyNonce,
+        idDestinationContainer: '',
+        idSourceContainer: '',
+        idContainerVersion: 0,
+        idContainer: 0,
+        idTag: 0,
+        idTrigger: 0,
+        idVariable: 0
+      };
+
+      switch (this.copyType.toLowerCase()) {
+        case 'container':
+          requestParams.action = 'copyContainer';
+          requestParams.idContainer = this.idToCopy;
+          break;
+
+        case 'tag':
+          requestParams.action = 'copyTag';
+          requestParams.idTag = this.idToCopy;
+          break;
+
+        case 'trigger':
+          requestParams.action = 'copyTrigger';
+          requestParams.idTrigger = this.idToCopy;
+          break;
+
+        case 'variable':
+          requestParams.action = 'copyVariable';
+          requestParams.idVariable = this.idToCopy;
+          break;
+
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+
+      if (this.idDestinationContainer) {
+        requestParams.idDestinationContainer = this.idDestinationContainer;
+      }
+
+      if (this.idSourceContainer) {
+        requestParams.idSourceContainer = this.idSourceContainer;
+      }
+
+      if (this.idContainerVersion > 0) {
+        requestParams.idContainerVersion = this.idContainerVersion;
+      }
+
+      external_CoreHome_["AjaxHelper"].fetch(requestParams).then(function (response) {
+        // If there was an issue with the response, display a generic error
+        if (!response || !response.success || !response.urlToNewCopy) {
+          var message = Object(external_CoreHome_["translate"])('General_ErrorRequest', '', '');
+          var notificationInstanceId = external_CoreHome_["NotificationsStore"].show({
+            message: message,
+            id: 'CopyDialogResultNotification',
+            context: 'error',
+            type: 'transient'
+          });
+          external_CoreHome_["NotificationsStore"].scrollToNotification(notificationInstanceId);
+        } // Close the modal, reload the store, and display notification
+
+
+        window.Piwik_Popover.close();
+
+        _this2.reloadEntityStore();
+
+        _this2.displaySuccessNotification(response.urlToNewCopy);
+      });
+    },
+    reloadEntityStore: function reloadEntityStore() {
+      switch (this.copyType.toLowerCase()) {
+        case 'container':
+          Containers_store.reload();
+          break;
+
+        case 'tag':
+          Tags_store.reload(this.idSourceContainer, this.idContainerVersion);
+          break;
+
+        case 'trigger':
+          Triggers_store.fetchTriggers(this.idSourceContainer, this.idContainerVersion);
+          break;
+
+        case 'variable':
+          Variables_store.fetchVariables(this.idSourceContainer, this.idContainerVersion);
+          break;
+
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+    },
+    displaySuccessNotification: function displaySuccessNotification(urlToNewCopy) {
+      var mainTranslation = 'TagManager_CopyXSuccess';
+      var typeTranslation = '';
+
+      switch (this.copyType.toLowerCase()) {
+        case 'container':
+          typeTranslation = 'TagManager_ContainerLowercase';
+          break;
+
+        case 'tag':
+          typeTranslation = 'TagManager_TagLowercase';
+          break;
+
+        case 'trigger':
+          typeTranslation = 'TagManager_TriggerLowercase';
+          break;
+
+        case 'variable':
+          typeTranslation = 'TagManager_VariableLowercase';
+          break;
+
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+
+      var message = Object(external_CoreHome_["translate"])(mainTranslation, ["<a href=\"".concat(urlToNewCopy, "\">"), '</a>', Object(external_CoreHome_["translate"])(typeTranslation)]);
+      var notificationInstanceId = external_CoreHome_["NotificationsStore"].show({
+        message: message,
+        id: 'CopyDialogResultNotification',
+        context: 'success',
+        type: 'transient'
+      });
+      external_CoreHome_["NotificationsStore"].scrollToNotification(notificationInstanceId);
     }
   },
   computed: {
@@ -10945,13 +11083,13 @@ function CopyDialogvue_type_template_id_3f975526_render(_ctx, _cache, $props, $s
       return Object(external_CoreHome_["translate"])('TagManager_CopyContainerNote', '<strong>', '</strong>');
     },
     getCopyUrl: function getCopyUrl() {
-      var _this$site2;
+      var _this$site3;
 
       var requestParams = {
         module: 'TagManager',
         action: '',
         idSite: this.defaultSite.id,
-        idDestinationSite: (_this$site2 = this.site) !== null && _this$site2 !== void 0 && _this$site2.id ? this.site.id : 0,
+        idDestinationSite: (_this$site3 = this.site) !== null && _this$site3 !== void 0 && _this$site3.id ? this.site.id : 0,
         nonce: this.copyNonce,
         idDestinationContainer: '',
         idSourceContainer: '',
@@ -11009,7 +11147,7 @@ function CopyDialogvue_type_template_id_3f975526_render(_ctx, _cache, $props, $s
 
 
 
-CopyDialogvue_type_script_lang_ts.render = CopyDialogvue_type_template_id_3f975526_render
+CopyDialogvue_type_script_lang_ts.render = CopyDialogvue_type_template_id_3dbbf457_render
 
 /* harmony default export */ var CopyDialog = (CopyDialogvue_type_script_lang_ts);
 // CONCATENATED MODULE: ./plugins/TagManager/vue/src/index.ts
