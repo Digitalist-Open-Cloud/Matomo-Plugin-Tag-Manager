@@ -12,6 +12,7 @@ namespace Piwik\Plugins\TagManager\Dao;
 use Piwik\Common;
 use Piwik\Date;
 use Piwik\Db;
+use Piwik\Plugins\TagManager\Input\Name;
 
 abstract class BaseDao
 {
@@ -151,9 +152,9 @@ abstract class BaseDao
             $newName = str_replace($matches[0], '', $name);
         }
 
-        // Make sure that we don't exceed the max length of 255 characters
-        if (strlen($newName . " ($number)") > 255) {
-            $newName = substr($newName, 0, 251);
+        // Make sure that we don't exceed the max length the name fields
+        if (strlen($newName . " ($number)") > Name::MAX_LENGTH) {
+            $newName = substr($newName, 0, (Name::MAX_LENGTH - 3) - strlen((string) $number));
         }
 
         $newName .= " ($number)";

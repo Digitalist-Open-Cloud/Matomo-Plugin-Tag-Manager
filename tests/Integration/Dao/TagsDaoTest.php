@@ -12,6 +12,7 @@ namespace Piwik\Plugins\TagManager\tests\Integration\Dao;
 use Piwik\Common;
 use Piwik\DbHelper;
 use Piwik\Plugins\TagManager\Dao\TagsDao;
+use Piwik\Plugins\TagManager\Input\Name;
 use Piwik\Plugins\TagManager\Model\Tag;
 use Piwik\Tests\Framework\TestCase\IntegrationTestCase;
 
@@ -693,7 +694,8 @@ class TagsDaoTest extends IntegrationTestCase
         }
 
         $updatedName = $this->dao->makeCopyNameUnique($idSite, $name, $idContainerVersion);
-        $this->assertLessThanOrEqual(255, strlen($updatedName), 'The name should not exceed the 255 characters');
+        $maxChars = Name::MAX_LENGTH;
+        $this->assertLessThanOrEqual($maxChars, strlen($updatedName), "The name should not exceed the {$maxChars} characters");
         $this->assertSame($expected, $updatedName);
     }
 
@@ -723,6 +725,16 @@ class TagsDaoTest extends IntegrationTestCase
                 'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcde',
                 [0],
                 'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890A (1)'
+            ],
+            [
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890A (9)',
+                [0],
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890 (10)'
+            ],
+            [
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890 (99)',
+                [0],
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz123456789 (100)'
             ],
         ];
     }
