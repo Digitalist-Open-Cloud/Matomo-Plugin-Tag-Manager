@@ -571,4 +571,12 @@ describe("ContainerTag", function () {
         pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTag');
         expect(await pageWrap.screenshot()).to.matchImage('copy_tag_site_selected');
     });
+
+    it('should be able to copy tag', async function () {
+      await page.goto(container1Base);
+      await clickFirstRowTableAction('icon-content-copy', 3);
+      await page.evaluate(() => $('div.copyMtmObjectDialog button.btn').click());
+      await page.waitForTimeout(250);
+      await capture.page(page, 'copy_tag_success');
+    });
 });
