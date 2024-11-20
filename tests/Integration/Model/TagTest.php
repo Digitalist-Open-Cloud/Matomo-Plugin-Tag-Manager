@@ -274,6 +274,7 @@ class TagTest extends IntegrationTestCase
                                     'uiControl' => 'textarea',
                                     'uiControlAttributes' =>
                                          [
+                                             'spellcheck' => 'false'
                                         ],
                                     'availableValues' => null,
                                     'description' => 'This tag is ideal when you need to add for example custom styles or custom JavaScript or when you are looking for a specific tag which is not yet supported. With this tag you can append any HTML to the bottom of your page, add styles, or execute JavaScript. Note: You can replace content within the HTML with variables by putting a variable name in curly brackets like this {{PageUrl}}.',
@@ -293,7 +294,8 @@ class TagTest extends IntegrationTestCase
                                     'defaultValue' => 'bodyEnd',
                                     'type' => 'string',
                                     'uiControl' => 'select',
-                                    'uiControlAttributes' => [],
+                                    'uiControlAttributes' => [
+                                    ],
                                     'availableValues' => [
                                         'headStart' => 'Head Start',
                                         'headEnd' => 'Head End',
@@ -369,6 +371,7 @@ class TagTest extends IntegrationTestCase
                                     'uiControl' => 'textarea',
                                     'uiControlAttributes' =>
                                          [
+                                             'spellcheck' => 'false'
                                         ],
                                     'availableValues' => null,
                                     'description' => 'This tag is ideal when you need to add for example custom styles or custom JavaScript or when you are looking for a specific tag which is not yet supported. With this tag you can append any HTML to the bottom of your page, add styles, or execute JavaScript. Note: You can replace content within the HTML with variables by putting a variable name in curly brackets like this {{PageUrl}}.',
@@ -388,7 +391,8 @@ class TagTest extends IntegrationTestCase
                                     'defaultValue' => 'bodyEnd',
                                     'type' => 'string',
                                     'uiControl' => 'select',
-                                    'uiControlAttributes' => [],
+                                    'uiControlAttributes' => [
+                                    ],
                                     'availableValues' => [
                                         'headStart' => 'Head Start',
                                         'headEnd' => 'Head End',
@@ -560,6 +564,7 @@ class TagTest extends IntegrationTestCase
                                 'uiControl' => 'textarea',
                                 'uiControlAttributes' =>
                                      [
+                                         'spellcheck' => 'false'
                                     ],
                                 'availableValues' => null,
                                 'description' => 'This tag is ideal when you need to add for example custom styles or custom JavaScript or when you are looking for a specific tag which is not yet supported. With this tag you can append any HTML to the bottom of your page, add styles, or execute JavaScript. Note: You can replace content within the HTML with variables by putting a variable name in curly brackets like this {{PageUrl}}.',
@@ -579,7 +584,8 @@ class TagTest extends IntegrationTestCase
                                 'defaultValue' => 'bodyEnd',
                                 'type' => 'string',
                                 'uiControl' => 'select',
-                                'uiControlAttributes' => [],
+                                'uiControlAttributes' => [
+                                ],
                                 'availableValues' => [
                                     'headStart' => 'Head Start',
                                     'headEnd' => 'Head End',
@@ -926,6 +932,7 @@ class TagTest extends IntegrationTestCase
                                     'uiControl' => 'textarea',
                                     'uiControlAttributes' =>
                                          [
+                                             'spellcheck' => 'false'
                                         ],
                                     'availableValues' => null,
                                     'description' => 'This tag is ideal when you need to add for example custom styles or custom JavaScript or when you are looking for a specific tag which is not yet supported. With this tag you can append any HTML to the bottom of your page, add styles, or execute JavaScript. Note: You can replace content within the HTML with variables by putting a variable name in curly brackets like this {{PageUrl}}.',
@@ -945,7 +952,8 @@ class TagTest extends IntegrationTestCase
                                     'defaultValue' => 'bodyEnd',
                                     'type' => 'string',
                                     'uiControl' => 'select',
-                                    'uiControlAttributes' => [],
+                                    'uiControlAttributes' => [
+                                    ],
                                     'availableValues' => [
                                         'headStart' => 'Head Start',
                                         'headEnd' => 'Head End',

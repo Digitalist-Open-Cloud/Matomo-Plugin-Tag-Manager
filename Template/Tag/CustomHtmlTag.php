@@ -46,6 +46,7 @@ class CustomHtmlTag extends BaseTag
                     ['<a rel="noreferrer noopener" target="_blank" href="' . Url::addCampaignParametersToMatomoLink('https://matomo.org/faq/tag-manager/faq_26815/', null, null, 'App.TagManager.getParameters') . '">', '</a>']
                 );
                 $field->validators[] = new NotEmpty();
+                $field->uiControlAttributes = ['spellcheck' => 'false'];
             }),
             $this->makeSetting('htmlPosition', 'bodyEnd', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
                 $field->title = Piwik::translate('TagManager_CustomHtmlHtmlPositionTitle');
