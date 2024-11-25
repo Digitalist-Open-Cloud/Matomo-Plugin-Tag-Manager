@@ -281,8 +281,8 @@ export default defineComponent({
         mainTranslation,
         [
           `<a href="${urlToNewCopy}">`,
-          '</a>',
           translate(typeTranslation),
+          '</a>',
         ],
       );
 
