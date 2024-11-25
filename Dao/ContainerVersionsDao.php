@@ -207,6 +207,19 @@ class ContainerVersionsDao extends BaseDao implements TagManagerDao
         Db::query($query, $bind);
     }
 
+    protected function isNameAlreadyUsed(int $idSite, string $name, ?int $idContainerVersion = null): bool
+    {
+        // Look up the container ID using the version ID
+        $bind = array(self::STATUS_ACTIVE, $idSite, $idContainerVersion);
+        $table = $this->tablePrefixed;
+        $version = Db::fetchRow("SELECT idcontainer FROM $table WHERE status = ? AND idsite = ? AND idcontainerversion = ? LIMIT 1", $bind);
+        if (empty($version['idcontainer'])) {
+            return false;
+        }
+
+        return $this->isNameInUse($idSite, $version['idcontainer'], $name);
+    }
+
     private function enrichVersions($containers)
     {
         if (empty($containers)) {

@@ -9,7 +9,6 @@
         :title="translate('TagManager_ChooseWebsite')"
         v-model="site"
       />
-      <ContainerSelector v-if="copyType.toLowerCase() !== 'container'"/>
       <Field
         uicontrol="select"
         name="idDestinationContainer"
@@ -23,7 +22,7 @@
       <p
         v-if="copyType.toLowerCase() === 'container'"
         class="copyNote" v-html="$sanitize(getCopyContainerNote)"></p>
-      <a :href="getCopyUrl" class="btn">{{ translate('General_Copy') }}</a>
+      <button class="btn" @click="performCopy">{{ translate('General_Copy') }}</button>
     </div>
   </div>
 </template>
@@ -34,7 +33,7 @@ import {
 } from 'vue';
 import {
   AjaxHelper,
-  MatomoUrl,
+  MatomoUrl, NotificationsStore,
   SiteRef,
   translate,
 } from 'CoreHome';
@@ -42,8 +41,11 @@ import {
   Form,
   Field,
 } from 'CorePluginsAdmin';
-import { ContainerSelector } from '../index.ts';
 import { Container } from '../types.ts';
+import TagsStore from '../Tag/Tags.store';
+import ContainersStore from '../Container/Containers.store';
+import TriggersStore from '../Trigger/Triggers.store';
+import VariablesStore from '../Variable/Variables.store';
 
 interface Option {
   key: string;
@@ -54,6 +56,21 @@ interface CopyDialogState {
   idDestinationContainer: string;
   containerOptions: Option[];
   site: SiteRef|null;
+}
+
+interface CopyRequestParams {
+  module: string;
+  action: string;
+  idSite: number;
+  idDestinationSite: string|number;
+  nonce: string;
+  idDestinationContainer: string;
+  idSourceContainer: string;
+  idContainerVersion: number;
+  idContainer: string|number;
+  idTag: string|number;
+  idTrigger: string|number;
+  idVariable: string|number;
 }
 
 export default defineComponent({
@@ -75,13 +92,22 @@ export default defineComponent({
       type: [String, Number],
       required: true,
     },
+    idSourceContainer: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    idContainerVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   directives: {
     Form,
   },
   components: {
     Field,
-    ContainerSelector,
   },
   data(): CopyDialogState {
     return {
@@ -92,6 +118,7 @@ export default defineComponent({
   },
   created() {
     this.onSiteChange();
+    this.idDestinationContainer = this.idSourceContainer;
   },
   watch: {
     site() {
@@ -139,6 +166,133 @@ export default defineComponent({
           });
         });
       });
+    },
+    performCopy() {
+      const requestParams: CopyRequestParams = {
+        module: 'TagManager',
+        action: '',
+        idSite: this.defaultSite.id,
+        idDestinationSite: this.site?.id ? this.site.id : 0,
+        nonce: this.copyNonce,
+        idDestinationContainer: '',
+        idSourceContainer: '',
+        idContainerVersion: 0,
+        idContainer: 0,
+        idTag: 0,
+        idTrigger: 0,
+        idVariable: 0,
+      };
+
+      switch (this.copyType.toLowerCase()) {
+        case 'container':
+          requestParams.action = 'copyContainer';
+          requestParams.idContainer = this.idToCopy;
+          break;
+        case 'tag':
+          requestParams.action = 'copyTag';
+          requestParams.idTag = this.idToCopy;
+          break;
+        case 'trigger':
+          requestParams.action = 'copyTrigger';
+          requestParams.idTrigger = this.idToCopy;
+          break;
+        case 'variable':
+          requestParams.action = 'copyVariable';
+          requestParams.idVariable = this.idToCopy;
+          break;
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+
+      if (this.idDestinationContainer) {
+        requestParams.idDestinationContainer = this.idDestinationContainer;
+      }
+
+      if (this.idSourceContainer) {
+        requestParams.idSourceContainer = this.idSourceContainer;
+      }
+
+      if (this.idContainerVersion > 0) {
+        requestParams.idContainerVersion = this.idContainerVersion;
+      }
+
+      AjaxHelper.fetch(requestParams).then((response) => {
+        // If there was an issue with the response, display a generic error
+        if (!response || !response.isSuccess || !response.urlToNewCopy) {
+          const message = translate('General_ErrorRequest', '', '');
+          const notificationInstanceId = NotificationsStore.show({
+            message,
+            id: 'CopyDialogResultNotification',
+            context: 'error',
+            type: 'transient',
+          });
+          NotificationsStore.scrollToNotification(notificationInstanceId);
+
+          window.Piwik_Popover.close();
+          return;
+        }
+
+        // Close the modal, reload the store, and display notification
+        this.reloadEntityStore();
+        this.displaySuccessNotification(response.urlToNewCopy);
+        window.Piwik_Popover.close();
+      });
+    },
+    reloadEntityStore() {
+      switch (this.copyType.toLowerCase()) {
+        case 'container':
+          ContainersStore.reload();
+          break;
+        case 'tag':
+          TagsStore.reload(this.idSourceContainer, this.idContainerVersion);
+          break;
+        case 'trigger':
+          TriggersStore.fetchTriggers(this.idSourceContainer, this.idContainerVersion);
+          break;
+        case 'variable':
+          VariablesStore.fetchVariables(this.idSourceContainer, this.idContainerVersion);
+          break;
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+    },
+    displaySuccessNotification(urlToNewCopy: string) {
+      const mainTranslation = 'TagManager_CopyXSuccess';
+      let typeTranslation = '';
+
+      switch (this.copyType.toLowerCase()) {
+        case 'container':
+          typeTranslation = 'TagManager_ContainerLowercase';
+          break;
+        case 'tag':
+          typeTranslation = 'TagManager_TagLowercase';
+          break;
+        case 'trigger':
+          typeTranslation = 'TagManager_TriggerLowercase';
+          break;
+        case 'variable':
+          typeTranslation = 'TagManager_VariableLowercase';
+          break;
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+
+      const message = translate(
+        mainTranslation,
+        [
+          `<a href="${urlToNewCopy}">`,
+          translate(typeTranslation),
+          '</a>',
+        ],
+      );
+
+      const notificationInstanceId = NotificationsStore.show({
+        message,
+        id: 'CopyDialogResultNotification',
+        context: 'success',
+        type: 'transient',
+      });
+      NotificationsStore.scrollToNotification(notificationInstanceId);
     },
   },
   computed: {
@@ -189,36 +343,52 @@ export default defineComponent({
       return translate('TagManager_CopyContainerNote', '<strong>', '</strong>');
     },
     getCopyUrl() {
-      let actionName = '';
+      const requestParams: CopyRequestParams = {
+        module: 'TagManager',
+        action: '',
+        idSite: this.defaultSite.id,
+        idDestinationSite: this.site?.id ? this.site.id : 0,
+        nonce: this.copyNonce,
+        idDestinationContainer: '',
+        idSourceContainer: '',
+        idContainerVersion: 0,
+        idContainer: 0,
+        idTag: 0,
+        idTrigger: 0,
+        idVariable: 0,
+      };
+
       switch (this.copyType.toLowerCase()) {
         case 'container':
-          actionName = 'copyContainer';
+          requestParams.action = 'copyContainer';
+          requestParams.idContainer = this.idToCopy;
           break;
         case 'tag':
-          actionName = 'copyTag';
+          requestParams.action = 'copyTag';
+          requestParams.idTag = this.idToCopy;
           break;
         case 'trigger':
-          actionName = 'copyTrigger';
+          requestParams.action = 'copyTrigger';
+          requestParams.idTrigger = this.idToCopy;
           break;
         case 'variable':
-          actionName = 'copyVariable';
+          requestParams.action = 'copyVariable';
+          requestParams.idVariable = this.idToCopy;
           break;
         default:
           throw Error('Unrecognised copy object type.');
       }
 
-      const requestParams = {
-        module: 'TagManager',
-        action: actionName,
-        idSite: this.defaultSite.id,
-        idDestinationSite: this.site?.id,
-        idContainer: this.idToCopy,
-        nonce: this.copyNonce,
-        idDestinationContainer: '',
-      };
-
       if (this.idDestinationContainer) {
         requestParams.idDestinationContainer = this.idDestinationContainer;
+      }
+
+      if (this.idSourceContainer) {
+        requestParams.idSourceContainer = this.idSourceContainer;
+      }
+
+      if (this.idContainerVersion > 0) {
+        requestParams.idContainerVersion = this.idContainerVersion;
       }
 
       return `?${MatomoUrl.stringify(requestParams)}`;

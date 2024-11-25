@@ -9,6 +9,7 @@
 
 namespace Piwik\Plugins\TagManager\Model;
 
+use Piwik\Container\StaticContainer;
 use Piwik\Date;
 use Piwik\Piwik;
 use Piwik\Plugins\TagManager\Dao\TagsDao;
@@ -127,7 +128,7 @@ class Tag extends BaseModel
         if (!empty($tag)) {
             $parameters = $this->formatParameters($tag['type'], $parameters);
             $this->updateTagColumns($idSite, $idContainerVersion, $idTag, array(
-                'parameters' => $parameters
+                'parameters' => $parameters,
             ));
         }
     }
@@ -180,6 +181,88 @@ class Tag extends BaseModel
     {
         $tag = $this->dao->getContainerTag($idSite, $idContainerVersion, $idTag);
         return $this->enrichTag($tag);
+    }
+
+    /**
+     * Make a copy of a tag. This can either be within the same container or to a different site/container. If within
+     *  the same container, only the tag is copied and it uses the same triggers and variables. If it's going to a
+     *  different container, it will make copies of all the triggers and variables that the tag references so that the
+     *  copy will have the same triggers and variables available.
+     *
+     * @param int $idSite
+     * @param int $idContainerVersion
+     * @param int $idTag ID of the tag to make a copy of
+     * @param int|null $idDestinationSite Optional ID of the site to copy to the tag to. If not provided the copy goes
+     * to the source site and container
+     * @param string|null $idDestinationContainer Optional ID of the container to copy the tag to. If not provided the
+     * copy goes to the source site and container
+     * @return int ID of the newly created Tag
+     * @throws \Exception
+     */
+    public function copyTag(int $idSite, int $idContainerVersion, int $idTag, ?int $idDestinationSite = null, ?string $idDestinationContainer = null): int
+    {
+        $tag = $this->getContainerTag($idSite, $idContainerVersion, $idTag);
+
+        $idDestinationVersion = $idContainerVersion;
+        if ($idDestinationSite !== null && !empty($idDestinationContainer)) {
+            $idDestinationVersion = $this->copyReferencedVariablesAndTriggers($tag, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationContainer);
+        }
+        // If the destination site isn't set, simply use the source site
+        $idDestinationSite = $idDestinationSite ?? $idSite;
+
+        $newName = $this->dao->makeCopyNameUnique($idDestinationSite, $tag['name'], $idDestinationVersion);
+
+        return $this->addContainerTag(
+            $idDestinationSite,
+            $idDestinationVersion,
+            $tag['type'],
+            $newName,
+            $tag['parameters'],
+            $tag['fire_trigger_ids'],
+            $tag['block_trigger_ids'],
+            $tag['fire_limit'],
+            $tag['fire_delay'],
+            $tag['priority'],
+            $tag['start_date'],
+            $tag['end_date'],
+            $tag['description'],
+            $tag['status']
+        );
+    }
+
+    private function copyReferencedVariablesAndTriggers(array &$tag, int $idSite, int $idContainerVersion, int $idDestinationSite, string $idDestinationContainer): int
+    {
+        $container = StaticContainer::get(Container::class);
+        $destinationContainer = $container->getContainer($idDestinationSite, $idDestinationContainer);
+        if (empty($destinationContainer)) {
+            throw new \Exception(Piwik::translate('TagManager_ErrorContainerDoesNotExist', [$idDestinationContainer]));
+        }
+
+        // Copy the new tag to the draft version of the destination container
+        $idDestinationVersion = $destinationContainer['draft']['idcontainerversion'] ?? null;
+        // Make sure that the version is set and is an integer value
+        if (empty($idDestinationVersion) || !(is_int($idDestinationVersion) || (is_string($idDestinationVersion) && ctype_digit($idDestinationVersion)))) {
+            throw new \Exception(Piwik::translate('TagManager_ErrorContainerVersionDoesNotExist'));
+        }
+        // Make sure that the type is int
+        $idDestinationVersion = intval($idDestinationVersion);
+
+        // Copy all the referenced variables and triggers and replace those references with references to the newly copied ones
+        StaticContainer::get(Variable::class)->copyReferencedVariables($tag, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationVersion);
+        $tag['fire_trigger_ids'] = $this->copyReferencedTriggers($idSite, $idContainerVersion, $tag['fire_trigger_ids'], $idDestinationSite, $idDestinationVersion);
+        $tag['block_trigger_ids'] = $this->copyReferencedTriggers($idSite, $idContainerVersion, $tag['block_trigger_ids'], $idDestinationSite, $idDestinationVersion);
+
+        return $idDestinationVersion;
+    }
+
+    private function copyReferencedTriggers(int $idSite, int $idContainerVersion, array $triggerIds, int $idDestinationSite, int $idDestinationVersion): array
+    {
+        $newTriggerIds = [];
+        foreach ($triggerIds as $triggerId) {
+            $newTriggerIds[] = StaticContainer::get(Trigger::class)->copyTriggerIfNoEquivalent($idSite, $idContainerVersion, $triggerId, $idDestinationSite, $idDestinationVersion);
+        }
+
+        return $newTriggerIds;
     }
 
     private function updateTagColumns($idSite, $idContainerVersion, $idTag, $columns)

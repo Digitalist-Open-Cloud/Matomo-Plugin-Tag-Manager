@@ -135,7 +135,7 @@
               <span>{{ tag.updated_date_pretty }}</span>
             </td>
             <td
-              class="action"
+              :class="getActionClasses"
               v-show="hasWriteAccess"
             >
               <a
@@ -159,6 +159,15 @@
                 class="table-action icon-delete"
                 @click="deleteTag(tag)"
                 :title="translate('TagManager_DeleteX', translate('TagManager_Tag'))"
+              />
+              <a
+                class="table-action icon-content-copy"
+                v-show="hasPublishCapability()"
+                @click="openCopyDialog(tag)"
+                :title="translate(
+                  'TagManager_CopyX',
+                  translate('TagManager_Tag'),
+                )"
               />
             </td>
           </tr>
@@ -385,6 +394,18 @@ export default defineComponent({
         NotificationsStore.scrollToNotification(instanceId);
       }, 200);
     },
+    openCopyDialog(tag: Tag) {
+      const url = MatomoUrl.stringify({
+        module: 'TagManager',
+        action: 'copyTagDialog',
+        idSite: tag.idsite,
+        idContainer: this.idContainer,
+        idTag: tag.idtag,
+        idContainerVersion: this.idContainerVersion,
+      });
+
+      window.Piwik_Popover.createPopupAndLoadUrl(url, '', 'mtmCopyTag');
+    },
   },
   computed: {
     triggers() {
@@ -455,6 +476,10 @@ export default defineComponent({
     },
     actionTranslatedText(): string {
       return this.translate('TagManager_TagsActionDescription');
+    },
+    getActionClasses(): string {
+      const copyClass = this.hasPublishCapability() ? ' hasCopyAction' : '';
+      return `action${copyClass}`;
     },
   },
 });

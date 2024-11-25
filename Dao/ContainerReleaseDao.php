@@ -168,6 +168,12 @@ class ContainerReleaseDao extends BaseDao implements TagManagerDao
         return $query->rowCount();
     }
 
+    protected function isNameAlreadyUsed(int $idSite, string $name, ?int $idContainerVersion = null): bool
+    {
+        // This is hard coded since releases don't have a name and therefore don't use this method
+        return true;
+    }
+
     private function enrichReleases($releases)
     {
         if (empty($releases)) {

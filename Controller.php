@@ -11,6 +11,7 @@ namespace Piwik\Plugins\TagManager;
 
 use Piwik\API\Request;
 use Piwik\Common;
+use Piwik\Container\StaticContainer;
 use Piwik\DataTable\Filter\SafeDecodeLabel;
 use Piwik\Filechecks;
 use Piwik\Menu\MenuTop;
@@ -21,6 +22,7 @@ use Piwik\Plugins\TagManager\API\PreviewCookie;
 use Piwik\Plugins\TagManager\Input\AccessValidator;
 use Piwik\Plugins\TagManager\Model\Container;
 use Piwik\Plugins\TagManager\Model\Environment;
+use Piwik\Plugins\TagManager\Model\Tag;
 use Piwik\Site;
 use Piwik\Url;
 use Piwik\View;
@@ -29,6 +31,7 @@ use Piwik\Notification\Manager as NotificationManager;
 class Controller extends \Piwik\Plugin\Controller
 {
     public const COPY_CONTAINER_NONCE = 'TagManager.copyContainer';
+    public const COPY_TAG_NONCE = 'TagManager.copyTag';
 
     /**
      * @var AccessValidator
@@ -385,15 +388,58 @@ class Controller extends \Piwik\Plugin\Controller
                 'idSite' => $idDestinationSite,
                 'idContainer' => $idContainerNew
             ]);
-        $successMessage = Piwik::translate('TagManager_ContainerCopySuccess', ['<a href="' . $url . '">', '</a>']);
-        $notification = new Notification($successMessage);
-        $notification->raw = true;
-        $notification->context = Notification::CONTEXT_SUCCESS;
-        $notification->type = Notification::TYPE_TRANSIENT;
-        Notification\Manager::notify('containerCopied', $notification);
 
-        // Once the copy is done, we should be able to redirect to the manage screen
-        $this->redirectToIndex('TagManager', 'manageContainers', $this->idSite);
+        return json_encode(['isSuccess' => true, 'urlToNewCopy' => $url]);
+    }
+
+    public function copyTagDialog()
+    {
+        $this->accessValidator->checkWriteCapability($this->idSite);
+        $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
+
+        $request = \Piwik\Request::fromRequest();
+        $idTag = $request->getIntegerParameter('idTag');
+        $idSourceContainer = $request->getStringParameter('idContainer');
+        $idContainerVersion = $request->getIntegerParameter('idContainerVersion');
+
+        $view = new View("@TagManager/copyDialog");
+        $view->defaultSiteDecoded = [
+            'id' => $this->idSite,
+            'name' => Common::unsanitizeInputValue(Site::getNameFor($this->idSite)),
+        ];
+        $view->idToCopy = $idTag;
+        $view->copyType = 'tag';
+        $view->idSourceContainer = $idSourceContainer;
+        $view->idContainerVersion = $idContainerVersion;
+        $view->copyNonce = Nonce::getNonce(self::COPY_TAG_NONCE);
+        return $view->render();
+    }
+
+    public function copyTag()
+    {
+        $this->accessValidator->checkWriteCapability($this->idSite);
+        $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
+        Nonce::checkNonce(self::COPY_TAG_NONCE);
+
+        $request = \Piwik\Request::fromRequest();
+        $idDestinationSite = $request->getIntegerParameter('idDestinationSite');
+        $idDestinationContainer = $request->getStringParameter('idDestinationContainer');
+        // Confirm tha the user has permission to copy to the selected site
+        $this->accessValidator->checkWriteCapability($idDestinationSite);
+        $idTag = $request->getIntegerParameter('idTag');
+        $idContainerVersion = $request->getIntegerParameter('idContainerVersion');
+
+        $idTagNew = StaticContainer::get(Tag::class)->copyTag($this->idSite, $idContainerVersion, $idTag, $idDestinationSite, $idDestinationContainer);
+
+        $url = 'index.php?module=TagManager&action=manageTags&'
+            . Url::getQueryStringFromParameters([
+                'idSite' => $idDestinationSite,
+                'idContainer' => $idDestinationContainer
+            ]) . '#?' . Url::getQueryStringFromParameters([
+                'idTag' => $idTagNew,
+            ]);
+
+        return json_encode(['isSuccess' => true, 'urlToNewCopy' => $url]);
     }
 
     protected function renderTemplate($template, array $variables = array())
@@ -411,7 +457,7 @@ class Controller extends \Piwik\Plugin\Controller
         $view->topMenu = MenuTop::getInstance()->getMenu();
         $view->tagManagerMenu = MenuTagManager::getInstance()->getMenu();
 
-        list($defaultAction, $defaultParameters) = Menu::getDefaultAction();
+        [$defaultAction, $defaultParameters] = Menu::getDefaultAction();
         $view->tagAction = $defaultAction;
 
         foreach ($variables as $key => $value) {
