@@ -174,6 +174,7 @@
         "CopyContainerNote": "%1$sNot:%2$s Kopyalanan kapsayıcıda, özel kod veya asıl siteye özgü referanslar varsa bazı ayarlamalar gerekebilir. Uyumluluğu sağlamak için ayarları gözden geçirin.",
         "CopyX": "%s kopyala",
         "CopyXDescription": "Bu %1$s ögesini çoğaltmak için, %1$s ögesini eklemek istediğiniz siteyi ve kapsayıcıyı seçin. Bu işlem %1$s ögesinin tüm ayarlarının tam bir kopyasını oluşturur.",
+        "CopyXSuccess": "Kopya oluşturuldu. %1$sŞimdi yeni %2$s ögesine gidin%3$s.",
         "CopyXTo": "%s şuraya kopyala:",
         "CreateNewContainer": "Yeni kapsayıcı ekle",
         "CreateNewContainerNow": "Şimdi yeni bir kapsayıcı ekle",
