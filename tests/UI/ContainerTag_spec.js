@@ -536,4 +536,47 @@ describe("ContainerTag", function () {
         await page.mouse.move(-10, -10);
         await capture.page(page, 'save_updated_with_custom_dimensions');
     });
+
+    it('should show dialog to copy tag', async function () {
+        await page.goto(container1Base);
+        await clickFirstRowTableAction('icon-content-copy', 3);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTag');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_tag_dialog');
+    });
+
+    it('should show list of containers to copy tag to', async function () {
+        await page.evaluate(() => $('div.matomo-field-select div.select-wrapper input.dropdown-trigger')[0].click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTag');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_tag_container_select');
+    });
+
+    it('should select container to copy tag to', async function () {
+        await page.evaluate(() => $('div.matomo-field-select ul li:first').click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTag');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_tag_container_selected');
+    });
+
+    it('should show list of sites to copy tag to', async function () {
+        await page.click('#destinationSite');
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTag');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_tag_site_select');
+    });
+
+    it('should select site to copy tag to', async function () {
+        await page.evaluate(() => $('#destinationSite ul li:first').click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTag');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_tag_site_selected');
+    });
+
+    it('should be able to copy tag', async function () {
+      await page.goto(container1Base);
+      await clickFirstRowTableAction('icon-content-copy', 3);
+      await page.evaluate(() => $('div.copyMtmObjectDialog button.btn').click());
+      await page.waitForNetworkIdle();
+      await capture.page(page, 'copy_tag_success');
+    });
 });

@@ -207,6 +207,11 @@ class VariablesDao extends BaseDao implements TagManagerDao
         return is_array($variables) && count($variables) ? array_column($variables, 'idvariable') : [];
     }
 
+    protected function isNameAlreadyUsed(int $idSite, string $name, ?int $idContainerVersion = null): bool
+    {
+        return $this->isNameInUse($idSite, $idContainerVersion, $name);
+    }
+
     private function enrichVariables($variables)
     {
         if (empty($variables)) {

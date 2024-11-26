@@ -60,6 +60,11 @@ class TagsDao extends BaseDao implements TagManagerDao
         return !empty($idSite);
     }
 
+    protected function isNameAlreadyUsed(int $idSite, string $name, ?int $idContainerVersion = null): bool
+    {
+        return $this->isNameInUse($idSite, $idContainerVersion, $name);
+    }
+
     public function createTag($idSite, $idContainerVersion, $type, $name, $parameters, $fireTriggerIds, $blockTriggerIds, $fireLimit, $fireDelay, $priority, $startDate, $endDate, $createdDate, $description = '', $status = '')
     {
         if ($this->isNameInUse($idSite, $idContainerVersion, $name)) {

@@ -15,10 +15,12 @@ use Piwik\Plugins\TagManager\Input\Name;
 use Piwik\Plugins\TagManager\Model\Comparison;
 use Piwik\Plugins\TagManager\Model\Tag;
 use Piwik\Plugins\TagManager\Model\Trigger;
+use Piwik\Plugins\TagManager\Model\Variable;
 use Piwik\Plugins\TagManager\TagManager;
 use Piwik\Plugins\TagManager\Template\Tag\CustomHtmlTag;
 use Piwik\Plugins\TagManager\Template\Trigger\CustomEventTrigger;
 use Piwik\Plugins\TagManager\Template\Trigger\WindowLoadedTrigger;
+use Piwik\Plugins\TagManager\Template\Variable\DataLayerVariable;
 use Piwik\Plugins\TagManager\Template\Variable\PreConfigured\ErrorUrlVariable;
 use Piwik\Plugins\TagManager\tests\Framework\TestCase\IntegrationTestCase;
 use Piwik\Tests\Framework\Fixture;
@@ -577,6 +579,59 @@ class TriggerTest extends IntegrationTestCase
         // when nothing matches
         $expected = [];
         $this->assertSame($expected, $this->model->getTriggerReferences($this->idSite, $this->containerVersion1, $idTrigger4));
+    }
+
+    public function testCopyTriggerIfNoEquivalent()
+    {
+        $this->assertSame($this->idTrigger1, $this->model->copyTriggerIfNoEquivalent($this->idSite, $this->containerVersion1, $this->idTrigger1), 'The ID should be the same');
+    }
+
+    public function testCopyTriggerIfNoEquivalentDifferentContainer()
+    {
+        $idNewTrigger = $this->model->copyTriggerIfNoEquivalent($this->idSite, $this->containerVersion1, $this->idTrigger1, $this->idSite, $this->containerVersion2);
+        $this->assertNotSame($this->idTrigger1, $idNewTrigger, 'The ID should be the same');
+
+        $trigger1 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1);
+        $trigger2 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion2, $idNewTrigger);
+
+        unset($trigger1['idtrigger']);
+        unset($trigger2['idtrigger']);
+        unset($trigger1['idcontainerversion']);
+        unset($trigger2['idcontainerversion']);
+
+        $this->assertEquals($trigger1, $trigger2, 'The triggers should match');
+
+        // Confirm that when trying to copy again, the matching trigger is used instead of creating a new copy
+        $idSecondTrigger = $this->model->copyTriggerIfNoEquivalent($this->idSite, $this->containerVersion1, $this->idTrigger1, $this->idSite, $this->containerVersion2);
+        $this->assertSame($idNewTrigger, $idSecondTrigger, 'The ID should be the same');
+    }
+
+    public function testCopyTriggerIfNoEquivalentReferencesVariable()
+    {
+        $trigger1 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1);
+
+        $variableName = 'TestVariableToReference';
+        $variableModel = StaticContainer::get(Variable::class);
+        $variableModel->addContainerVariable($this->idSite, $this->containerVersion1, DataLayerVariable::ID, $variableName, ['dataLayerName' => 'myVariable'], '', []);
+        $conditions = [['comparison' => 'equals', 'actual' => $variableName, 'expected' => 'someValue']]    ;
+        $this->model->updateContainerTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1, $trigger1['name'], $trigger1['parameters'], $conditions, $trigger1['description']);
+
+        $this->assertCount(0, $variableModel->getContainerVariables($this->idSite, $this->containerVersion2), 'There should be no variables in the container.');
+
+        $idNewTrigger = $this->model->copyTriggerIfNoEquivalent($this->idSite, $this->containerVersion1, $this->idTrigger1, $this->idSite, $this->containerVersion2);
+        $this->assertNotSame($this->idTrigger1, $idNewTrigger, 'The ID should be the same');
+
+        $this->assertCount(1, $variableModel->getContainerVariables($this->idSite, $this->containerVersion2), 'The variable should have been copied to the new container.');
+
+        $trigger2 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion2, $idNewTrigger);
+
+        unset($trigger1['idtrigger']);
+        unset($trigger2['idtrigger']);
+        unset($trigger1['idcontainerversion']);
+        unset($trigger2['idcontainerversion']);
+        $trigger1['conditions'] = $conditions;
+
+        $this->assertEquals($trigger1, $trigger2, 'The triggers should match');
     }
 
     private function updateContainerTrigger($idSite, $idContainerVersion, $idTrigger, $name = 'MyName', $parameters = [], $conditions = [], $description = '')

@@ -12,6 +12,7 @@ namespace Piwik\Plugins\TagManager\tests\Integration\Dao;
 use Piwik\Common;
 use Piwik\DbHelper;
 use Piwik\Plugins\TagManager\Dao\TagsDao;
+use Piwik\Plugins\TagManager\Input\Name;
 use Piwik\Plugins\TagManager\Model\Tag;
 use Piwik\Tests\Framework\TestCase\IntegrationTestCase;
 
@@ -661,6 +662,81 @@ class TagsDaoTest extends IntegrationTestCase
         $this->assertSame($this->now, $tags[1]['deleted_date']);
         $this->assertSame(TagsDao::STATUS_ACTIVE, $tags[2]['status']);
         $this->assertSame(null, $tags[2]['deleted_date']);
+    }
+
+    public function testMakeCopyNameUniqueNoContainerVersion()
+    {
+        $this->expectException(\Exception::class);
+        $this->dao->makeCopyNameUnique(1, 'FooTag');
+    }
+
+    /**
+     * @dataProvider getMakeCopyNameUniqueTestData
+     * @param string $name
+     * @param array $tags
+     * @param string $expected
+     * @return void
+     */
+    public function testMakeCopyNameUnique(string $name, array $tags, string $expected)
+    {
+        $idSite = 1;
+        $idContainerVersion = 5;
+        foreach ($tags as $number) {
+            $tempName = "FooTag ($number)";
+            if ($number < 1) {
+                $tempName = "FooTag";
+            }
+
+            if ($tags == [0] && strpos($name, 'FooTag') === false) {
+                $tempName = $name;
+            }
+            $this->createTag($idSite, $idContainerVersion, $tempName);
+        }
+
+        $updatedName = $this->dao->makeCopyNameUnique($idSite, $name, $idContainerVersion);
+        $maxChars = Name::MAX_LENGTH;
+        $this->assertLessThanOrEqual($maxChars, strlen($updatedName), "The name should not exceed the {$maxChars} characters");
+        $this->assertSame($expected, $updatedName);
+    }
+
+    public function getMakeCopyNameUniqueTestData(): array
+    {
+        return [
+            ['FooTag', [], 'FooTag'],
+            ['FooTag (1)', [], 'FooTag (1)'],
+            ['FooTag', [0], 'FooTag (1)'],
+            ['FooTag (1)', [0], 'FooTag (1)'],
+            ['FooTag', [1], 'FooTag'],
+            ['FooTag', [1, 2], 'FooTag'],
+            ['FooTag', [1, 2, 3], 'FooTag'],
+            ['FooTag (1)', [1], 'FooTag (2)'],
+            ['FooTag (1)', [1, 2], 'FooTag (3)'],
+            ['FooTag (1)', [1, 2, 3], 'FooTag (4)'],
+            ['FooTag (2)', [1], 'FooTag (2)'],
+            ['FooTag (2)', [1, 2], 'FooTag (3)'],
+            ['FooTag (2)', [1, 2, 3], 'FooTag (4)'],
+            ['FooTag (3)', [1], 'FooTag (3)'],
+            ['FooTag (3)', [1, 2], 'FooTag (3)'],
+            ['FooTag (3)', [1, 2, 3], 'FooTag (4)'],
+            ['FooTag(1)', [1, 2, 3], 'FooTag(1)'],
+            ['SomeOtherName', [1, 2, 3], 'SomeOtherName'],
+            ['SomeOtherName (1)', [1, 2, 3], 'SomeOtherName (1)'],
+            [
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcde',
+                [0],
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890A (1)'
+            ],
+            [
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890A (9)',
+                [0],
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890 (10)'
+            ],
+            [
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890 (99)',
+                [0],
+                'Test tag with a really long name. Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz1234567890Abcdefghijklmnopqrstuvwxyz123456789 (100)'
+            ],
+        ];
     }
 
     private function createTag($idSite = 1, $idContainerVersion = 5, $name = 'FooTag')
