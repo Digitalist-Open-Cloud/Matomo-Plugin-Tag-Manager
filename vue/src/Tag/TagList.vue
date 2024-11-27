@@ -355,6 +355,7 @@ export default defineComponent({
       const doDelete = () => {
         TagsStore.deleteTag(this.idContainer, this.idContainerVersion, tag.idtag).then(() => {
           TagsStore.reload(this.idContainer, this.idContainerVersion);
+          NotificationsStore.remove('CopyDialogResultNotification');
         });
       };
 

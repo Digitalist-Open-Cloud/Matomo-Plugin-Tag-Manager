@@ -150,6 +150,7 @@ import {
   MatomoUrl,
   translate,
   externalLink,
+  NotificationsStore,
 } from 'CoreHome';
 import AvailableContextsStore from '../AvailableContexts.store';
 import ContainersStore from './Containers.store';
@@ -237,6 +238,7 @@ export default defineComponent({
       function doDelete() {
         ContainersStore.deleteContainer(container.idcontainer).then(() => {
           ContainersStore.reload();
+          NotificationsStore.remove('CopyDialogResultNotification');
         });
       }
 

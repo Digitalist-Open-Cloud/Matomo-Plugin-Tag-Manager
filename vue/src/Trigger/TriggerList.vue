@@ -179,7 +179,9 @@ import {
   AjaxHelper,
   Matomo,
   ContentBlock,
-  ContentTable, MatomoUrl,
+  ContentTable,
+  MatomoUrl,
+  NotificationsStore,
 } from 'CoreHome';
 import { Field } from 'CorePluginsAdmin';
 import TriggersStore from './Triggers.store';
@@ -249,6 +251,7 @@ export default defineComponent({
               trigger.idtrigger!,
             ).then(() => {
               TriggersStore.reload(this.idContainer, this.idContainerVersion);
+              NotificationsStore.remove('CopyDialogResultNotification');
             });
           };
 

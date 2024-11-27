@@ -223,6 +223,7 @@ import {
   ContentTable,
   Matomo,
   MatomoUrl,
+  NotificationsStore,
 } from 'CoreHome';
 import { Field } from 'CorePluginsAdmin';
 import VariablesStore from './Variables.store';
@@ -308,6 +309,7 @@ export default defineComponent({
                 variable.idvariable!,
               ).then(() => {
                 VariablesStore.reload(this.idContainer, this.idContainerVersion);
+                NotificationsStore.remove('CopyDialogResultNotification');
               });
             },
           });
