@@ -309,4 +309,12 @@ describe("ContainerVariable", function () {
         await page.waitForNetworkIdle();
         await capture.page(page, 'copy_variable_success');
     });
+
+    it('should hide copy success notification after deleting variable', async function () {
+        await clickFirstRowTableAction('icon-delete', 4);
+        await page.waitForNetworkIdle();
+        await modal.clickButton(page, 'Yes');
+        await page.waitForNetworkIdle();
+        await capture.page(page, 'copy_variable_success_hidden');
+    });
 });
