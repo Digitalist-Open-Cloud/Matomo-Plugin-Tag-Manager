@@ -23,6 +23,7 @@ use Piwik\Plugins\TagManager\Input\AccessValidator;
 use Piwik\Plugins\TagManager\Model\Container;
 use Piwik\Plugins\TagManager\Model\Environment;
 use Piwik\Plugins\TagManager\Model\Tag;
+use Piwik\Plugins\TagManager\Model\Trigger;
 use Piwik\Site;
 use Piwik\Url;
 use Piwik\View;
@@ -32,6 +33,7 @@ class Controller extends \Piwik\Plugin\Controller
 {
     public const COPY_CONTAINER_NONCE = 'TagManager.copyContainer';
     public const COPY_TAG_NONCE = 'TagManager.copyTag';
+    public const COPY_TRIGGER_NONCE = 'TagManager.copyTrigger';
 
     /**
      * @var AccessValidator
@@ -437,6 +439,56 @@ class Controller extends \Piwik\Plugin\Controller
                 'idContainer' => $idDestinationContainer
             ]) . '#?' . Url::getQueryStringFromParameters([
                 'idTag' => $idTagNew,
+            ]);
+
+        return json_encode(['isSuccess' => true, 'urlToNewCopy' => $url]);
+    }
+
+    public function copyTriggerDialog()
+    {
+        $this->accessValidator->checkWriteCapability($this->idSite);
+        $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
+
+        $request = \Piwik\Request::fromRequest();
+        $idTrigger = $request->getIntegerParameter('idTrigger');
+        $idSourceContainer = $request->getStringParameter('idContainer');
+        $idContainerVersion = $request->getIntegerParameter('idContainerVersion');
+
+        $view = new View("@TagManager/copyDialog");
+        $view->defaultSiteDecoded = [
+            'id' => $this->idSite,
+            'name' => Common::unsanitizeInputValue(Site::getNameFor($this->idSite)),
+        ];
+        $view->idToCopy = $idTrigger;
+        $view->copyType = 'trigger';
+        $view->idSourceContainer = $idSourceContainer;
+        $view->idContainerVersion = $idContainerVersion;
+        $view->copyNonce = Nonce::getNonce(self::COPY_TRIGGER_NONCE);
+        return $view->render();
+    }
+
+    public function copyTrigger()
+    {
+        $this->accessValidator->checkWriteCapability($this->idSite);
+        $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
+        Nonce::checkNonce(self::COPY_TRIGGER_NONCE);
+
+        $request = \Piwik\Request::fromRequest();
+        $idDestinationSite = $request->getIntegerParameter('idDestinationSite');
+        $idDestinationContainer = $request->getStringParameter('idDestinationContainer');
+        // Confirm tha the user has permission to copy to the selected site
+        $this->accessValidator->checkWriteCapability($idDestinationSite);
+        $idTrigger = $request->getIntegerParameter('idTrigger');
+        $idContainerVersion = $request->getIntegerParameter('idContainerVersion');
+
+        $idTriggerNew = StaticContainer::get(Trigger::class)->copyTrigger($this->idSite, $idContainerVersion, $idTrigger, $idDestinationSite, $idDestinationContainer);
+
+        $url = 'index.php?module=TagManager&action=manageTriggers&'
+            . Url::getQueryStringFromParameters([
+                'idSite' => $idDestinationSite,
+                'idContainer' => $idDestinationContainer
+            ]) . '#?' . Url::getQueryStringFromParameters([
+                'idTrigger' => $idTriggerNew,
             ]);
 
         return json_encode(['isSuccess' => true, 'urlToNewCopy' => $url]);

@@ -10,9 +10,11 @@
 namespace Piwik\Plugins\TagManager\tests\Integration\Model;
 
 use Piwik\Container\StaticContainer;
+use Piwik\Plugins\TagManager\Context\WebContext;
 use Piwik\Plugins\TagManager\Dao\TriggersDao;
 use Piwik\Plugins\TagManager\Input\Name;
 use Piwik\Plugins\TagManager\Model\Comparison;
+use Piwik\Plugins\TagManager\Model\Container;
 use Piwik\Plugins\TagManager\Model\Tag;
 use Piwik\Plugins\TagManager\Model\Trigger;
 use Piwik\Plugins\TagManager\Model\Variable;
@@ -589,7 +591,7 @@ class TriggerTest extends IntegrationTestCase
     public function testCopyTriggerIfNoEquivalentDifferentContainer()
     {
         $idNewTrigger = $this->model->copyTriggerIfNoEquivalent($this->idSite, $this->containerVersion1, $this->idTrigger1, $this->idSite, $this->containerVersion2);
-        $this->assertNotSame($this->idTrigger1, $idNewTrigger, 'The ID should be the same');
+        $this->assertNotSame($this->idTrigger1, $idNewTrigger, 'The ID should not be the same');
 
         $trigger1 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1);
         $trigger2 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion2, $idNewTrigger);
@@ -624,6 +626,90 @@ class TriggerTest extends IntegrationTestCase
         $this->assertCount(1, $variableModel->getContainerVariables($this->idSite, $this->containerVersion2), 'The variable should have been copied to the new container.');
 
         $trigger2 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion2, $idNewTrigger);
+
+        unset($trigger1['idtrigger']);
+        unset($trigger2['idtrigger']);
+        unset($trigger1['idcontainerversion']);
+        unset($trigger2['idcontainerversion']);
+        $trigger1['conditions'] = $conditions;
+
+        $this->assertEquals($trigger1, $trigger2, 'The triggers should match');
+    }
+
+    public function testCopyTrigger()
+    {
+        $countTriggers = count($this->model->getContainerTriggers($this->idSite, $this->containerVersion1));
+        $idNewTrigger = $this->model->copyTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1);
+        $this->assertGreaterThan(0, $idNewTrigger);
+        $this->assertNotSame($this->idTrigger1, $idNewTrigger, 'The ID should not be the same');
+        $this->assertCount($countTriggers + 1, $this->model->getContainerTriggers($this->idSite, $this->containerVersion1), 'The number of triggers should have increased by 1');
+
+        $trigger1 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1);
+        $trigger2 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion1, $idNewTrigger);
+
+        $this->assertSame($trigger1['name'] . ' (1)', $trigger2['name'], 'The name should have been updated');
+        unset($trigger1['idtrigger']);
+        unset($trigger2['idtrigger']);
+        unset($trigger1['name']);
+        unset($trigger2['name']);
+
+        $this->assertEquals($trigger1, $trigger2, 'The triggers should match');
+    }
+
+    public function testCopyTriggerDifferentContainer()
+    {
+        $containerModel = StaticContainer::get(Container::class);
+        $context = WebContext::ID;
+        $description = 'My description';
+
+        $idContainer = $containerModel->addContainer($this->idSite, $context, 'FooContainer', $description, 0, 0, 0);
+        $container = $containerModel->getContainer($this->idSite, $idContainer);
+        $idContainerVersion = $container['draft']['idcontainerversion'];
+
+        $idNewTrigger = $this->model->copyTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1, $this->idSite, $idContainer);
+        $this->assertNotSame($this->idTrigger1, $idNewTrigger, 'The ID should not be the same');
+
+        $trigger1 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1);
+        $trigger2 = $this->model->getContainerTrigger($this->idSite, $idContainerVersion, $idNewTrigger);
+
+        unset($trigger1['idtrigger']);
+        unset($trigger2['idtrigger']);
+        unset($trigger1['idcontainerversion']);
+        unset($trigger2['idcontainerversion']);
+
+        $this->assertEquals($trigger1, $trigger2, 'The triggers should match');
+
+        // Confirm that when trying to copy again, it does in fact create a new copy
+        $idSecondTrigger = $this->model->copyTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1, $this->idSite, $idContainer);
+        $this->assertNotSame($idNewTrigger, $idSecondTrigger, 'The ID should not be the same');
+    }
+
+    public function testCopyTriggerReferencesVariable()
+    {
+        $trigger1 = $this->model->getContainerTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1);
+
+        $containerModel = StaticContainer::get(Container::class);
+        $context = WebContext::ID;
+        $description = 'My description';
+
+        $idContainer = $containerModel->addContainer($this->idSite, $context, 'FooContainer', $description, 0, 0, 0);
+        $container = $containerModel->getContainer($this->idSite, $idContainer);
+        $idContainerVersion = $container['draft']['idcontainerversion'];
+
+        $variableName = 'TestVariableToReference';
+        $variableModel = StaticContainer::get(Variable::class);
+        $variableModel->addContainerVariable($this->idSite, $this->containerVersion1, DataLayerVariable::ID, $variableName, ['dataLayerName' => 'myVariable'], '', []);
+        $conditions = [['comparison' => 'equals', 'actual' => $variableName, 'expected' => 'someValue']]    ;
+        $this->model->updateContainerTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1, $trigger1['name'], $trigger1['parameters'], $conditions, $trigger1['description']);
+
+        $this->assertCount(0, $variableModel->getContainerVariables($this->idSite, $idContainerVersion), 'There should be no variables in the container.');
+
+        $idNewTrigger = $this->model->copyTrigger($this->idSite, $this->containerVersion1, $this->idTrigger1, $this->idSite, $idContainer);
+        $this->assertNotSame($this->idTrigger1, $idNewTrigger, 'The ID should be the same');
+
+        $this->assertCount(1, $variableModel->getContainerVariables($this->idSite, $idContainerVersion), 'The variable should have been copied to the new container.');
+
+        $trigger2 = $this->model->getContainerTrigger($this->idSite, $idContainerVersion, $idNewTrigger);
 
         unset($trigger1['idtrigger']);
         unset($trigger2['idtrigger']);
