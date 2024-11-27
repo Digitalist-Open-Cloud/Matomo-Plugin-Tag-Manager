@@ -384,6 +384,16 @@ class APITest extends IntegrationTestCase
         $this->api->updateContainerVersion($this->idSite, $this->idContainer, 99999, 'TheName');
     }
 
+    public function test_updateContainerVersion_shouldThrowExceptionForInvalidNameLength()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Version name: The value contains "48" characters but should contain at most 30 characters.');
+
+        $this->setSuperUser();
+        $idContainerVersion = $this->api->createContainerVersion($this->idSite, $this->idContainer, 'My Name');
+        $this->api->updateContainerVersion($this->idSite, $this->idContainer, $idContainerVersion, 'My Name very long name should throw an exception', 'TheName');
+    }
+
     public function test_createContainerVersion_shouldFailWhenNotHavingViewPermissions()
     {
         $this->expectException(\Piwik\NoAccessException::class);
@@ -400,6 +410,15 @@ class APITest extends IntegrationTestCase
 
         $this->setUser();
         $this->api->createContainerVersion($this->idSite, $this->idContainer, 'TheName');
+    }
+
+    public function test_createContainerVersion_shouldThrowExceptionForInvalidNameLength()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Version name: The value contains "48" characters but should contain at most 30 characters.');
+
+        $this->setSuperUser();
+        $this->api->createContainerVersion($this->idSite, $this->idContainer, 'My Name very long name should throw an exception');
     }
 
     public function test_deleteContainerVersion_shouldFailWhenNotHavingViewPermissions()

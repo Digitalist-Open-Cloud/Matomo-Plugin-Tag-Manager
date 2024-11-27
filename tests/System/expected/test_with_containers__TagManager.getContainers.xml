@@ -21,7 +21,7 @@
 				<idsite>2</idsite>
 				<status>active</status>
 				<revision>1</revision>
-				<name>container1_v4_reversioned &quot;Quotes&quot;</name>
+				<name>container1_v4_rev &quot;Quotes&quot;</name>
 				<description>new version for quotes container</description>
 
 
@@ -45,7 +45,7 @@
 				<release_login>superUserLogin</release_login>
 
 
-				<version_name>container1_v4_reversioned &quot;Quotes&quot;</version_name>
+				<version_name>container1_v4_rev &quot;Quotes&quot;</version_name>
 			</row>
 			<row>
 				<idcontainerrelease>6</idcontainerrelease>
@@ -57,7 +57,7 @@
 				<release_login>superUserLogin</release_login>
 
 
-				<version_name>container1_v4_reversioned &quot;Quotes&quot;</version_name>
+				<version_name>container1_v4_rev &quot;Quotes&quot;</version_name>
 			</row>
 			<row>
 				<idcontainerrelease>7</idcontainerrelease>
@@ -69,7 +69,7 @@
 				<release_login>superUserLogin</release_login>
 
 
-				<version_name>container1_v4_reversioned &quot;Quotes&quot;</version_name>
+				<version_name>container1_v4_rev &quot;Quotes&quot;</version_name>
 			</row>
 			<row>
 				<idcontainerrelease>8</idcontainerrelease>

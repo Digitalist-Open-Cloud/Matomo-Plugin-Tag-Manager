@@ -174,6 +174,7 @@
         "CopyContainerNote": "%1$sNóta:%2$s Seans go mbeidh coigeartuithe de dhíth ar an gcoimeádán cóipeáilte má tá cód saincheaptha nó tagairtí a bhaineann go sonrach leis an suíomh Gréasáin bunaidh san áireamh ann. Athbhreithnigh socruithe chun comhoiriúnacht a chinntiú.",
         "CopyX": "Cóipeáil %s",
         "CopyXDescription": "Chun an %1$s seo a dhúbailt, roghnaigh an suíomh Gréasáin agus an coimeádán ar mhaith leat %1$s a chur leis. Cruthóidh sé seo cóip bheacht de gach socrú de %1$s.",
+        "CopyXSuccess": "D'éirigh le cóip a chruthú. %1$s Déan nascleanúint chuig an %2$s nua anois %3$s.",
         "CopyXTo": "Cóipeáil %s go:",
         "CreateNewContainer": "Cruthaigh coimeádán nua",
         "CreateNewContainerNow": "Cruthaigh coimeádán nua anois",

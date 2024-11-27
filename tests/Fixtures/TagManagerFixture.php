@@ -161,7 +161,7 @@ class TagManagerFixture extends Fixture
         $this->idContainer1Version3 = $this->api->createContainerVersion($this->idSite2, $this->idContainer1, 'container1_v3', 'Version from draft with tags, triggers and variables');
         $this->idContainer1Version4 = $this->api->createContainerVersion($this->idSite2, $this->idContainer1, 'container1_v4_reversioned', 'new version from an older version', $this->idContainer1Version2);
 
-        $this->idContainerQuotesVersion1 = $this->api->createContainerVersion($this->idSite2, $this->idContainerQuotes, 'container1_v4_reversioned "Quotes"', 'new version for quotes container');
+        $this->idContainerQuotesVersion1 = $this->api->createContainerVersion($this->idSite2, $this->idContainerQuotes, 'container1_v4_rev "Quotes"', 'new version for quotes container');
 
         $this->addContainerVariable($this->idSite2, $this->idContainer1, $this->idContainer1DraftVersion, null, 'My Var 3', array('dataLayerName' => 'dataVarName'), false, [], 'My Var 3 description');
 
