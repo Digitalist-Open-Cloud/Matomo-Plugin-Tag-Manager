@@ -260,7 +260,7 @@ export default defineComponent({
         let lastContainerVersion = null;
 
         if (this.create && versions[0]?.name) {
-          this.lastVersion = versions[0].name;
+          this.lastVersion = Matomo.helper.htmlEntities(versions[0].name);
           lastContainerVersion = versions[0].idcontainerversion;
         } else if (this.edit) {
           versions.forEach((v, i) => {
@@ -270,7 +270,7 @@ export default defineComponent({
             }
 
             if (v.idcontainerversion === this.idContainerVersion && versions[i + 1]) {
-              this.lastVersion = versions[i + 1].name;
+              this.lastVersion = Matomo.helper.htmlEntities(versions[i + 1].name);
               lastContainerVersion = versions[i + 1].idcontainerversion;
             }
           });

@@ -40,6 +40,9 @@ use Piwik\Plugins\TagManager\Template\Variable\MatomoConfigurationVariable;
 use Piwik\Plugins\TagManager\Template\Variable\VariablesProvider;
 use Exception;
 use Piwik\UrlHelper;
+use Piwik\Validators\BaseValidator;
+use Piwik\Validators\CharacterLength;
+use Piwik\Validators\NotEmpty;
 
 /**
  * API for plugin Tag Manager.
@@ -1167,6 +1170,7 @@ class API extends \Piwik\Plugin\API
             $this->accessValidator->checkUseCustomTemplatesCapability($idSite);
         }
         $this->containers->checkContainerExists($idSite, $idContainer);
+        BaseValidator::check(Piwik::translate('TagManager_VersionName'), $name, [new NotEmpty(), new CharacterLength(1, 30)]);
 
         if (empty($idContainerVersion)) {
             $idContainerVersion = $this->getContainerDraftVersion($idSite, $idContainer);
@@ -1196,6 +1200,7 @@ class API extends \Piwik\Plugin\API
         if (!Piwik::isUserHasCapability($idSite, PublishLiveContainer::ID) && !Piwik::isUserHasCapability($idSite, PublishLiveContainer::ID)) {
             $this->accessValidator->checkUseCustomTemplatesCapability($idSite);
         }
+        BaseValidator::check(Piwik::translate('TagManager_VersionName'), $name, [new NotEmpty(), new CharacterLength(1, 30)]);
         $this->containers->checkContainerVersionExists($idSite, $idContainer, $idContainerVersion);
 
         return $this->containers->updateContainerVersion($idSite, $idContainer, $idContainerVersion, $name, $description);
