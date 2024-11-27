@@ -10,9 +10,11 @@
 namespace Piwik\Plugins\TagManager\tests\Integration\Model;
 
 use Piwik\Container\StaticContainer;
+use Piwik\Plugins\TagManager\Context\WebContext;
 use Piwik\Plugins\TagManager\Dao\VariablesDao;
 use Piwik\Plugins\TagManager\Input\Name;
 use Piwik\Plugins\TagManager\Model\Comparison;
+use Piwik\Plugins\TagManager\Model\Container;
 use Piwik\Plugins\TagManager\Model\Tag;
 use Piwik\Plugins\TagManager\Model\Trigger;
 use Piwik\Plugins\TagManager\Model\Variable;
@@ -675,6 +677,103 @@ class VariableTest extends IntegrationTestCase
         $this->model->copyReferencedVariables($tag, $this->idSite, $this->containerVersion1, $this->idSite, $this->containerVersion2);
         $this->assertEquals($initialTag, $tag, 'The tag should still be the same');
         $this->assertCount(1, $this->model->getContainerVariables($this->idSite, $this->containerVersion2), 'There should be one variable.');
+    }
+
+    public function testCopyVariable()
+    {
+        $this->assertCount(1, $this->model->getContainerVariables($this->idSite, $this->containerVersion1), 'There should be one variable before copy');
+        $idNewVariable = $this->model->copyVariable($this->idSite, $this->containerVersion1, $this->idVariable1);
+        $this->assertGreaterThan(0, $idNewVariable);
+        $this->assertNotSame($this->idVariable1, $idNewVariable);
+
+        $this->assertCount(2, $this->model->getContainerVariables($this->idSite, $this->containerVersion1), 'There should be two variable after copy');
+
+        $variable1 = $this->model->getContainerVariable($this->idSite, $this->containerVersion1, $this->idVariable1);
+        $variable2 = $this->model->getContainerVariable($this->idSite, $this->containerVersion1, $idNewVariable);
+
+        $this->assertSame($variable1['name'] . ' (1)', $variable2['name'], 'The name should have been updated');
+        unset($variable1['idvariable']);
+        unset($variable2['idvariable']);
+        unset($variable1['name']);
+        unset($variable2['name']);
+
+        $this->assertEquals($variable1, $variable2, 'The variable should match');
+    }
+
+    public function testCopyVariableDifferentContainer()
+    {
+        $containerModel = StaticContainer::get(Container::class);
+        $context = WebContext::ID;
+        $description = 'My description';
+
+        $idContainer = $containerModel->addContainer($this->idSite, $context, 'FooContainer', $description, 0, 0, 0);
+        $container = $containerModel->getContainer($this->idSite, $idContainer);
+        $idContainerVersion = $container['draft']['idcontainerversion'];
+
+        $this->assertCount(0, $this->model->getContainerVariables($this->idSite, $idContainerVersion), 'There should be no variables before copy');
+        $idNewVariable = $this->model->copyVariable($this->idSite, $this->containerVersion1, $this->idVariable1, $this->idSite, $container['idcontainer']);
+        $this->assertGreaterThan(0, $idNewVariable);
+        $this->assertNotSame($this->idVariable1, $idNewVariable);
+
+        $this->assertCount(1, $this->model->getContainerVariables($this->idSite, $idContainerVersion), 'There should be one variable after copy');
+
+        $variable1 = $this->model->getContainerVariable($this->idSite, $this->containerVersion1, $this->idVariable1);
+        $variable2 = $this->model->getContainerVariable($this->idSite, $idContainerVersion, $idNewVariable);
+
+        $this->assertNotSame($variable1['idcontainerversion'], $variable2['idcontainerversion'], 'The version should be different');
+        unset($variable1['idvariable']);
+        unset($variable2['idvariable']);
+        unset($variable1['idcontainerversion']);
+        unset($variable2['idcontainerversion']);
+
+        $this->assertEquals($variable1, $variable2, 'The variable should match');
+    }
+
+    public function testCopyVariableReferencingVariable()
+    {
+        $variableParams = ['jsFunction' => 'function () { return 12345; }'];
+        $idVariable = $this->addContainerVariable($this->idSite, $this->containerVersion1, CustomJsFunctionVariable::ID, 'TestVariable', $variableParams);
+        $this->assertSame(2, $idVariable);
+
+        $idReferencingVariable = $this->addContainerVariable($this->idSite, $this->containerVersion1, CustomJsFunctionVariable::ID, 'ReferencingTestVariable', $parameters = ['jsFunction' => 'function () { return {{TestVariable}}; }']);
+        $this->assertSame(3, $idReferencingVariable);
+
+        $containerModel = StaticContainer::get(Container::class);
+        $context = WebContext::ID;
+        $description = 'My description';
+
+        $idContainer = $containerModel->addContainer($this->idSite, $context, 'FooContainer', $description, 0, 0, 0);
+        $container = $containerModel->getContainer($this->idSite, $idContainer);
+        $idContainerVersion = $container['draft']['idcontainerversion'];
+
+        $this->assertCount(0, $this->model->getContainerVariables($this->idSite, $idContainerVersion), 'There should be no variables before copy');
+        $idNewVariable = $this->model->copyVariable($this->idSite, $this->containerVersion1, $idReferencingVariable, $this->idSite, $container['idcontainer']);
+        $this->assertGreaterThan(0, $idNewVariable);
+        $this->assertNotSame($idReferencingVariable, $idNewVariable);
+
+        $this->assertCount(2, $this->model->getContainerVariables($this->idSite, $idContainerVersion), 'There should be two variables after copy');
+
+        $variable1 = $this->model->getContainerVariable($this->idSite, $this->containerVersion1, $idReferencingVariable);
+        $variable2 = $this->model->getContainerVariable($this->idSite, $idContainerVersion, $idNewVariable);
+
+        $this->assertNotSame($variable1['idcontainerversion'], $variable2['idcontainerversion'], 'The version should be different');
+        unset($variable1['idvariable']);
+        unset($variable2['idvariable']);
+        unset($variable1['idcontainerversion']);
+        unset($variable2['idcontainerversion']);
+
+        $this->assertEquals($variable1, $variable2, 'The variable should match');
+
+        $variable1 = $this->model->getContainerVariable($this->idSite, $this->containerVersion1, $idVariable);
+        $variable2 = $this->model->findVariableByName($this->idSite, $idContainerVersion, $variable1['name']);
+
+        $this->assertNotSame($variable1['idcontainerversion'], $variable2['idcontainerversion'], 'The version should be different');
+        unset($variable1['idvariable']);
+        unset($variable2['idvariable']);
+        unset($variable1['idcontainerversion']);
+        unset($variable2['idcontainerversion']);
+
+        $this->assertEquals($variable1, $variable2, 'The copied referenced variable should match');
     }
 
     private function addContainerVariable($idSite, $idContainerVersion = 5, $type = null, $name = 'MyName', $parameters = [], $defaultValue = '', $lookupTable = [], $description = '')

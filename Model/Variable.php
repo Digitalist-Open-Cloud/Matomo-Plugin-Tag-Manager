@@ -436,6 +436,42 @@ class Variable extends BaseModel
         }
     }
 
+    /**
+     * Make a copy of the variable and return the ID.
+     *
+     * @param int $idSite
+     * @param int $idContainerVersion
+     * @param int $idVariable
+     * @param null|int $idDestinationSite Optional ID of the site to which to copy the variable. If empty, isSite is used
+     * @param string|null $idDestinationContainer Optional ID of the container to copy the variable to. If not provided
+     * the copy goes to the source site and container
+     * @return int ID of the newly created variable
+     */
+    public function copyVariable(int $idSite, int $idContainerVersion, int $idVariable, ?int $idDestinationSite = 0, ?string $idDestinationContainer = null): int
+    {
+        $idDestinationSite = $idDestinationSite ?: $idSite;
+        $idDestinationVersion = $idContainerVersion;
+        if ($idDestinationSite !== null && !empty($idDestinationContainer)) {
+            $idDestinationVersion = $this->getDraftContainerVersion($idDestinationSite, $idDestinationContainer);
+        }
+
+        $variable = $this->getContainerVariable($idSite, $idContainerVersion, $idVariable);
+        $newVarName = $this->dao->makeCopyNameUnique($idDestinationSite, $variable['name'], $idDestinationVersion);
+
+        $this->copyReferencedVariables($variable, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationVersion);
+
+        return $this->addContainerVariable(
+            $idDestinationSite,
+            $idDestinationVersion,
+            $variable['type'],
+            $newVarName,
+            $variable['parameters'],
+            $variable['default_value'],
+            $variable['lookup_table'],
+            $variable['description']
+        );
+    }
+
     private function copyVariableByNameIfNoEquivalent(string $variableName, int $idSite, int $idContainerVersion, int $idDestinationSite, int $idDestinationContainerVersion): string
     {
         $variable = $this->findVariableByName($idSite, $idContainerVersion, $variableName);

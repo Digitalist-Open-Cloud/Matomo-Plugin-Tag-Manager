@@ -94,7 +94,7 @@
               <span>{{ variable.updated_date_pretty }}</span>
             </td>
             <td
-              class="action"
+              :class="getActionClasses"
               v-show="hasWriteAccess"
             >
               <a
@@ -106,6 +106,15 @@
                 class="table-action icon-delete"
                 @click="deleteVariable(variable)"
                 :title="translate('TagManager_DeleteX', translate('TagManager_Variable'))"
+              />
+              <a
+                class="table-action icon-content-copy"
+                v-show="hasPublishCapability()"
+                @click="openCopyDialog(variable)"
+                :title="translate(
+                  'TagManager_CopyX',
+                  translate('TagManager_Variable'),
+                )"
               />
             </td>
           </tr>
@@ -314,6 +323,20 @@ export default defineComponent({
     truncateText(text: string, length: number) {
       return tagManagerHelper.truncateText(text, length);
     },
+    hasPublishCapability() {
+      return Matomo.hasUserCapability('tagmanager_write') && Matomo.hasUserCapability('tagmanager_use_custom_templates');
+    },
+    openCopyDialog(variable: Variable) {
+      const url = MatomoUrl.stringify({
+        module: 'TagManager',
+        action: 'copyVariableDialog',
+        idSite: variable.idsite,
+        idContainer: this.idContainer,
+        idVariable: variable.idvariable,
+        idContainerVersion: this.idContainerVersion,
+      });
+      window.Piwik_Popover.createPopupAndLoadUrl(url, '', 'mtmCopyVariable');
+    },
   },
   computed: {
     isLoading() {
@@ -369,6 +392,10 @@ export default defineComponent({
     },
     actionTranslatedText(): string {
       return this.translate('TagManager_VariablesActionDescription');
+    },
+    getActionClasses(): string {
+      const copyClass = this.hasPublishCapability() ? ' hasCopyAction' : '';
+      return `action${copyClass}`;
     },
   },
 });

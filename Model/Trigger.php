@@ -200,8 +200,8 @@ class Trigger extends BaseModel
      * @param int $idContainerVersion
      * @param int $idTrigger
      * @param null|int $idDestinationSite Optional ID of the site to which to copy the trigger. If empty, isSite is used
-     * @param string|null $idDestinationContainer Optional ID of the container to copy the tag to. If not provided the
-     *  copy goes to the source site and container
+     * @param string|null $idDestinationContainer Optional ID of the container to copy the trigger to. If not provided
+     * the copy goes to the source site and container
      * @return int ID of the newly created trigger
      */
     public function copyTrigger(int $idSite, int $idContainerVersion, int $idTrigger, ?int $idDestinationSite = 0, ?string $idDestinationContainer = null): int
