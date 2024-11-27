@@ -398,6 +398,7 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyTagDialog()
     {
+        $this->checkSitePermission();
         $this->accessValidator->checkWriteCapability($this->idSite);
         $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
 
@@ -421,6 +422,7 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyTag()
     {
+        $this->checkSitePermission();
         $this->accessValidator->checkWriteCapability($this->idSite);
         $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
         Nonce::checkNonce(self::COPY_TAG_NONCE);
@@ -448,6 +450,7 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyTriggerDialog()
     {
+        $this->checkSitePermission();
         $this->accessValidator->checkWriteCapability($this->idSite);
         $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
 
@@ -471,6 +474,7 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyTrigger()
     {
+        $this->checkSitePermission();
         $this->accessValidator->checkWriteCapability($this->idSite);
         $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
         Nonce::checkNonce(self::COPY_TRIGGER_NONCE);
@@ -498,6 +502,7 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyVariableDialog()
     {
+        $this->checkSitePermission();
         $this->accessValidator->checkWriteCapability($this->idSite);
         $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
 
@@ -521,6 +526,7 @@ class Controller extends \Piwik\Plugin\Controller
 
     public function copyVariable()
     {
+        $this->checkSitePermission();
         $this->accessValidator->checkWriteCapability($this->idSite);
         $this->accessValidator->checkUseCustomTemplatesCapability($this->idSite);
         Nonce::checkNonce(self::COPY_VARIABLE_NONCE);
