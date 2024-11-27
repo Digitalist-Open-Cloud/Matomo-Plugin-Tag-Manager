@@ -519,11 +519,10 @@ class Variable extends BaseModel
             throw new \Exception('Variable name cannot be empty');
         }
 
-        $variableName = $variable['name'];
-
+        $this->copyReferencedVariables($variable, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationContainerVersion);
 
         // Insert the new variable
-        $newVarName = $this->dao->makeCopyNameUnique($idDestinationSite, $variableName, $idDestinationContainerVersion);
+        $newVarName = $this->dao->makeCopyNameUnique($idDestinationSite, $variable['name'], $idDestinationContainerVersion);
         $this->addContainerVariable(
             $idDestinationSite,
             $idDestinationContainerVersion,
