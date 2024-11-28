@@ -216,6 +216,7 @@ import {
   EnrichedHeadline,
   ContentBlock,
   MatomoUrl,
+  externalLink,
 } from 'CoreHome';
 import AvailableContextsStore from '../AvailableContexts.store';
 import {
@@ -339,11 +340,8 @@ export default defineComponent({
       );
     },
     containerDashboardDescription() {
-      return translate(
-        'TagManager_ContainerDashboardDescription',
-        '<a href="https://matomo.org/guide/tag-manager/getting-started-with-tag-manager/" target="_blank" rel="noreferrer noopener">',
-        '</a>',
-      );
+      const linkString = externalLink('https://matomo.org/guide/tag-manager/getting-started-with-tag-manager/');
+      return translate('TagManager_ContainerDashboardDescription', linkString, '</a>');
     },
     sortedContainerVersionTags() {
       const tags = (this.containerVersion?.tags || []);

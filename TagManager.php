@@ -954,6 +954,7 @@ class TagManager extends \Piwik\Plugin
         $result[] = 'TagManager_TagLowercase';
         $result[] = 'TagManager_TriggerLowercase';
         $result[] = 'TagManager_VariableLowercase';
+        $result[] = 'TagManager_LearnMoreFullStop';
     }
 
     public function getStylesheetFiles(&$stylesheets)
