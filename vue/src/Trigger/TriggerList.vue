@@ -91,7 +91,7 @@
               <span>{{ trigger.updated_date_pretty }}</span>
             </td>
             <td
-              class="action"
+              :class="getActionClasses"
               v-show="hasWriteAccess"
             >
               <a
@@ -103,6 +103,15 @@
                 class="table-action icon-delete"
                 @click="deleteTrigger(trigger)"
                 :title="translate('TagManager_DeleteX', translate('TagManager_Trigger'))"
+              />
+              <a
+                class="table-action icon-content-copy"
+                v-show="hasPublishCapability()"
+                @click="openCopyDialog(trigger)"
+                :title="translate(
+                  'TagManager_CopyX',
+                  translate('TagManager_Trigger'),
+                )"
               />
             </td>
           </tr>
@@ -170,7 +179,9 @@ import {
   AjaxHelper,
   Matomo,
   ContentBlock,
-  ContentTable, MatomoUrl,
+  ContentTable,
+  MatomoUrl,
+  NotificationsStore,
 } from 'CoreHome';
 import { Field } from 'CorePluginsAdmin';
 import TriggersStore from './Triggers.store';
@@ -240,6 +251,7 @@ export default defineComponent({
               trigger.idtrigger!,
             ).then(() => {
               TriggersStore.reload(this.idContainer, this.idContainerVersion);
+              NotificationsStore.remove('CopyDialogResultNotification');
             });
           };
 
@@ -254,6 +266,20 @@ export default defineComponent({
     },
     truncateText(text: string, length: number) {
       return tagManagerHelper.truncateText(text, length);
+    },
+    hasPublishCapability() {
+      return Matomo.hasUserCapability('tagmanager_write') && Matomo.hasUserCapability('tagmanager_use_custom_templates');
+    },
+    openCopyDialog(trigger: Trigger) {
+      const url = MatomoUrl.stringify({
+        module: 'TagManager',
+        action: 'copyTriggerDialog',
+        idSite: trigger.idsite,
+        idContainer: this.idContainer,
+        idTrigger: trigger.idtrigger,
+        idContainerVersion: this.idContainerVersion,
+      });
+      window.Piwik_Popover.createPopupAndLoadUrl(url, '', 'mtmCopyTrigger');
     },
   },
   computed: {
@@ -309,6 +335,10 @@ export default defineComponent({
     },
     actionTranslatedText(): string {
       return this.translate('TagManager_TriggersActionDescription');
+    },
+    getActionClasses(): string {
+      const copyClass = this.hasPublishCapability() ? ' hasCopyAction' : '';
+      return `action${copyClass}`;
     },
   },
 });

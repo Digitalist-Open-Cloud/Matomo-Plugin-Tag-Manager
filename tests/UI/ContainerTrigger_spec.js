@@ -257,4 +257,57 @@ describe("ContainerTrigger", function () {
         await page.waitForTimeout(250);
         await capture.page(page, 'create_new_long_name');
     });
+
+    it('should show dialog to copy trigger', async function () {
+        await page.goto(container1Base);
+        await clickFirstRowTableAction('icon-content-copy', 3);
+        await page.waitForNetworkIdle();
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTrigger');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_trigger_dialog');
+    });
+
+    it('should show list of containers to copy trigger to', async function () {
+        await page.evaluate(() => $('div.matomo-field-select div.select-wrapper input.dropdown-trigger')[0].click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTrigger');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_trigger_container_select');
+    });
+
+    it('should select container to copy trigger to', async function () {
+        await page.evaluate(() => $('div.matomo-field-select ul li:first').click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTrigger');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_trigger_container_selected');
+    });
+
+    it('should show list of sites to copy trigger to', async function () {
+        await page.click('#destinationSite');
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTrigger');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_trigger_site_select');
+    });
+
+    it('should select site to copy trigger to', async function () {
+        await page.evaluate(() => $('#destinationSite ul li:first').click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTrigger');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_trigger_site_selected');
+    });
+
+    it('should be able to copy trigger', async function () {
+        await page.goto(container1Base);
+        await clickFirstRowTableAction('icon-content-copy', 3);
+        await page.waitForNetworkIdle();
+        await page.evaluate(() => $('div.copyMtmObjectDialog button.btn').click());
+        await page.waitForNetworkIdle();
+        await capture.page(page, 'copy_trigger_success');
+    });
+
+    it('should hide copy success notification after deleting trigger', async function () {
+        await clickFirstRowTableAction('icon-delete', 4);
+        await page.waitForNetworkIdle();
+        await modal.clickButton(page, 'Yes');
+        await page.waitForNetworkIdle();
+        await capture.page(page, 'copy_trigger_success_hidden');
+    });
 });

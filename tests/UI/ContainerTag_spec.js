@@ -579,4 +579,12 @@ describe("ContainerTag", function () {
       await page.waitForNetworkIdle();
       await capture.page(page, 'copy_tag_success');
     });
+
+    it('should hide copy success notification after deleting tag', async function () {
+        await clickFirstRowTableAction('icon-delete', 4);
+        await page.waitForNetworkIdle();
+        await modal.clickButton(page, 'Yes');
+        await page.waitForNetworkIdle();
+        await capture.page(page, 'copy_tag_success_hidden');
+    });
 });

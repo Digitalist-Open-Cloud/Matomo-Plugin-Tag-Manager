@@ -193,6 +193,40 @@ class Trigger extends BaseModel
         );
     }
 
+    /**
+     * Make a copy of the trigger and return the ID.
+     *
+     * @param int $idSite
+     * @param int $idContainerVersion
+     * @param int $idTrigger
+     * @param null|int $idDestinationSite Optional ID of the site to which to copy the trigger. If empty, isSite is used
+     * @param string|null $idDestinationContainer Optional ID of the container to copy the trigger to. If not provided
+     * the copy goes to the source site and container
+     * @return int ID of the newly created trigger
+     */
+    public function copyTrigger(int $idSite, int $idContainerVersion, int $idTrigger, ?int $idDestinationSite = 0, ?string $idDestinationContainer = null): int
+    {
+        $idDestinationSite = $idDestinationSite ?: $idSite;
+        $idDestinationVersion = $idContainerVersion;
+        if ($idDestinationSite !== null && !empty($idDestinationContainer)) {
+            $idDestinationVersion = $this->getDraftContainerVersion($idDestinationSite, $idDestinationContainer);
+        }
+
+        $trigger = $this->getContainerTrigger($idSite, $idContainerVersion, $idTrigger);
+        StaticContainer::get(Variable::class)->copyReferencedVariables($trigger, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationVersion);
+
+        $newName = $this->dao->makeCopyNameUnique($idDestinationSite, $trigger['name'], $idDestinationVersion);
+        return $this->addContainerTrigger(
+            $idDestinationSite,
+            $idDestinationVersion,
+            $trigger['type'],
+            $newName,
+            $trigger['parameters'],
+            $trigger['conditions'],
+            $trigger['description']
+        );
+    }
+
     private function updateTriggerColumns($idSite, $idContainerVersion, $idTrigger, $columns)
     {
         if (!isset($columns['updated_date'])) {

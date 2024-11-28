@@ -232,20 +232,7 @@ class Tag extends BaseModel
 
     private function copyReferencedVariablesAndTriggers(array &$tag, int $idSite, int $idContainerVersion, int $idDestinationSite, string $idDestinationContainer): int
     {
-        $container = StaticContainer::get(Container::class);
-        $destinationContainer = $container->getContainer($idDestinationSite, $idDestinationContainer);
-        if (empty($destinationContainer)) {
-            throw new \Exception(Piwik::translate('TagManager_ErrorContainerDoesNotExist', [$idDestinationContainer]));
-        }
-
-        // Copy the new tag to the draft version of the destination container
-        $idDestinationVersion = $destinationContainer['draft']['idcontainerversion'] ?? null;
-        // Make sure that the version is set and is an integer value
-        if (empty($idDestinationVersion) || !(is_int($idDestinationVersion) || (is_string($idDestinationVersion) && ctype_digit($idDestinationVersion)))) {
-            throw new \Exception(Piwik::translate('TagManager_ErrorContainerVersionDoesNotExist'));
-        }
-        // Make sure that the type is int
-        $idDestinationVersion = intval($idDestinationVersion);
+        $idDestinationVersion = $this->getDraftContainerVersion($idDestinationSite, $idDestinationContainer);
 
         // Copy all the referenced variables and triggers and replace those references with references to the newly copied ones
         StaticContainer::get(Variable::class)->copyReferencedVariables($tag, $idSite, $idContainerVersion, $idDestinationSite, $idDestinationVersion);

@@ -247,10 +247,10 @@ export default defineComponent({
           TagsStore.reload(this.idSourceContainer, this.idContainerVersion);
           break;
         case 'trigger':
-          TriggersStore.fetchTriggers(this.idSourceContainer, this.idContainerVersion);
+          TriggersStore.reload(this.idSourceContainer, this.idContainerVersion);
           break;
         case 'variable':
-          VariablesStore.fetchVariables(this.idSourceContainer, this.idContainerVersion);
+          VariablesStore.reload(this.idSourceContainer, this.idContainerVersion);
           break;
         default:
           throw Error('Unrecognised copy object type.');

@@ -264,4 +264,57 @@ describe("ContainerVariable", function () {
         await createOrUpdateVariable();
         await captureCustomVariablesList('create_new_long_name');
     });
+
+    it('should show dialog to copy variable', async function () {
+        await page.goto(container1Base);
+        await clickFirstRowTableAction('icon-content-copy', 3);
+        await page.waitForNetworkIdle();
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyVariable');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_variable_dialog');
+    });
+
+    it('should show list of containers to copy variable to', async function () {
+        await page.evaluate(() => $('div.matomo-field-select div.select-wrapper input.dropdown-trigger')[0].click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyVariable');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_variable_container_select');
+    });
+
+    it('should select container to copy variable to', async function () {
+        await page.evaluate(() => $('div.matomo-field-select ul li:first').click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyVariable');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_variable_container_selected');
+    });
+
+    it('should show list of sites to copy variable to', async function () {
+        await page.click('#destinationSite');
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyVariable');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_variable_site_select');
+    });
+
+    it('should select site to copy variable to', async function () {
+        await page.evaluate(() => $('#destinationSite ul li:first').click());
+        await page.waitForTimeout(250);
+        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyVariable');
+        expect(await pageWrap.screenshot()).to.matchImage('copy_variable_site_selected');
+    });
+
+    it('should be able to copy variable', async function () {
+        await page.goto(container1Base);
+        await clickFirstRowTableAction('icon-content-copy', 3);
+        await page.waitForNetworkIdle();
+        await page.evaluate(() => $('div.copyMtmObjectDialog button.btn').click());
+        await page.waitForNetworkIdle();
+        await capture.page(page, 'copy_variable_success');
+    });
+
+    it('should hide copy success notification after deleting variable', async function () {
+        await clickFirstRowTableAction('icon-delete', 4);
+        await page.waitForNetworkIdle();
+        await modal.clickButton(page, 'Yes');
+        await page.waitForNetworkIdle();
+        await capture.page(page, 'copy_variable_success_hidden');
+    });
 });
