@@ -214,7 +214,7 @@ export default defineComponent({
       return translate('TagManager_ManageContainersIntro', linkString, '</a>');
     },
     canCopyContainer(): boolean {
-      return this.isSuperUser;
+      return Matomo.hasUserCapability('tagmanager_write') && Matomo.hasUserCapability('tagmanager_use_custom_templates');
     },
     getActionClasses(): string {
       const copyClass = this.canCopyContainer ? ' hasCopyAction' : '';
