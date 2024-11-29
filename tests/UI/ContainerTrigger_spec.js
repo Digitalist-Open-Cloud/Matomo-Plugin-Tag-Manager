@@ -310,6 +310,7 @@ describe("ContainerTrigger", function () {
         await page.goto(container1Base);
         await clickFirstRowTableAction('icon-content-copy', 3);
         await page.waitForNetworkIdle();
+        // Reverse testing specific CSS preventing dropdown from overflowing the modal like usual
         await page.evaluate(function() {
           var style = document.createElement('style');
           style.appendChild(document.createTextNode(`div.ui-dialog.mtmCopyTrigger div#Piwik_Popover { overflow-y: unset !important; }`));
