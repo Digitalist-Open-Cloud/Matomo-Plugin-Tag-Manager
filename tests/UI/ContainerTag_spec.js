@@ -544,14 +544,9 @@ describe("ContainerTag", function () {
         expect(await pageWrap.screenshot()).to.matchImage('copy_tag_dialog');
     });
 
-    it('should show list of containers to copy tag to', async function () {
+    it('should select container to copy tag to', async function () {
         await page.evaluate(() => $('div.matomo-field-select div.select-wrapper input.dropdown-trigger')[0].click());
         await page.waitForTimeout(250);
-        pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTag');
-        expect(await pageWrap.screenshot()).to.matchImage('copy_tag_container_select');
-    });
-
-    it('should select container to copy tag to', async function () {
         await page.evaluate(() => $('div.matomo-field-select ul li:first').click());
         await page.waitForTimeout(250);
         pageWrap = await page.waitForSelector('div.ui-dialog.mtmCopyTag');
@@ -586,5 +581,19 @@ describe("ContainerTag", function () {
         await modal.clickButton(page, 'Yes');
         await page.waitForNetworkIdle();
         await capture.page(page, 'copy_tag_success_hidden');
+    });
+
+    it('should show list of containers to copy tag to', async function () {
+        await page.goto(container1Base);
+        await clickFirstRowTableAction('icon-content-copy', 3);
+        await page.waitForNetworkIdle();
+        await page.evaluate(function() {
+          var style = document.createElement('style');
+          style.appendChild(document.createTextNode(`div.ui-dialog.mtmCopyTag div#Piwik_Popover { overflow-y: unset !important; }`));
+          document.body.appendChild(style);
+        });
+        await page.evaluate(() => $('div.matomo-field-select div.select-wrapper input.dropdown-trigger')[0].click());
+        await page.waitForTimeout(250);
+        await capture.page(page, 'copy_tag_container_select');
     });
 });
