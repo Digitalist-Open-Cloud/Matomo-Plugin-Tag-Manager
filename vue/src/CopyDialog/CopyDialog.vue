@@ -1,7 +1,10 @@
 <template>
   <div class="copyMtmObjectDialog">
     <h2>{{ getCopyDialogTitle }}</h2>
-    <p>{{ getCopyDescription }}</p>
+    <p>
+      {{ getCopyDescription }}&nbsp;
+      <span v-html="$sanitize(getLearnMoreLink)" class="learnMore"></span>
+    </p>
     <div v-form>
       <Field
         uicontrol="site"
@@ -33,9 +36,11 @@ import {
 } from 'vue';
 import {
   AjaxHelper,
-  MatomoUrl, NotificationsStore,
+  MatomoUrl,
+  NotificationsStore,
   SiteRef,
   translate,
+  externalLink,
 } from 'CoreHome';
 import {
   Form,
@@ -392,6 +397,28 @@ export default defineComponent({
       }
 
       return `?${MatomoUrl.stringify(requestParams)}`;
+    },
+    getLearnMoreLink() {
+      let faqLink = '';
+      switch (this.copyType.toLowerCase()) {
+        case 'container':
+          faqLink = 'https://matomo.org/faq/tag-manager/how-to-copy-a-matomo-tag-manager-container-and-its-components';
+          break;
+        case 'tag':
+          faqLink = 'https://matomo.org/faq/tag-manager/how-to-copy-a-tag-in-matomo-tag-manager ';
+          break;
+        case 'trigger':
+          faqLink = 'https://matomo.org/faq/tag-manager/how-to-copy-a-trigger-in-matomo-tag-manager';
+          break;
+        case 'variable':
+          faqLink = 'https://matomo.org/faq/tag-manager/how-to-copy-a-variable-in-matomo-tag-manager';
+          break;
+        default:
+          throw Error('Unrecognised copy object type.');
+      }
+
+      const linkString = externalLink(faqLink);
+      return translate('TagManager_LearnMoreFullStop', linkString, '</a>');
     },
   },
 });
