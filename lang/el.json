@@ -608,6 +608,7 @@
         "LastUpdated": "Τελευταία ενημέρωση",
         "LastVersions": "Τελευταίες εκδόσεις",
         "LearnMore": "Δείτε περισσότερα",
+        "LearnMoreFullStop": "%1$sΜάθετε περισσότερα%2$s.",
         "LinkedinInsightTagConversionIdDescription": "Ένα προαιρετικό αναγνωριστικό συζήτησης. Αν επιθυμείτε να καταγράφεται μια συγκεκριμένη συζήτηση όταν εκτελείται αυτή η σήμανση.",
         "LinkedinInsightTagConversionIdHelpText": "Αν δεν είστε σίγουροι που να βρείτε το αναγνωριστικό της συζήτησης, δείτε την %1$sτεκμηρίωση του LinkedIn%2$s για περισσότερες πληροφορίες.",
         "LinkedinInsightTagConversionIdTitle": "Αναγνωριστικό Συζήτησης LinkedIn (προαιρετικό)",
